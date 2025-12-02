@@ -173,8 +173,18 @@ public class SBPCSpecialsPlugin extends JavaPlugin implements Listener {
             Integer maxIndex = (secCond != null && secCond.contains("max-index"))
                     ? secCond.getInt("max-index") : null;
 
+            boolean appliesToAllSections = secCond != null && secCond.getBoolean("applies-to-all-sections", false);
+            List<String> allowedSections = secCond != null ? secCond.getStringList("allowed-sections") : Collections.emptyList();
+            allowedSections = new ArrayList<>(allowedSections);
+            allowedSections.removeIf(s -> s == null || s.trim().isEmpty());
+
+            if (!appliesToAllSections && allowedSections.isEmpty()) {
+                getLogger().warning("Special " + id + " is missing allowed-sections and does not apply to all sections; skipping.");
+                continue;
+            }
+
             SpecialDefinition.SectionCondition sectionCondition =
-                    new SpecialDefinition.SectionCondition(requireType, minIndex, maxIndex);
+                    new SpecialDefinition.SectionCondition(requireType, minIndex, maxIndex, appliesToAllSections, allowedSections);
 
             // --- Reward ---
             ConfigurationSection rewardSec = sec.getConfigurationSection("reward");
@@ -428,6 +438,7 @@ public class SBPCSpecialsPlugin extends JavaPlugin implements Listener {
                     .replace("{player}", player.getName())
                     .replace("{special}", id)));
         }
+        sendSectionApplicabilityMessage(player, def.getSectionCondition());
         if (msg.getBroadcastMessage() != null && !msg.getBroadcastMessage().isEmpty()) {
             Bukkit.broadcastMessage(color(msg.getBroadcastMessage()
                     .replace("{player}", player.getName())
@@ -454,32 +465,27 @@ public class SBPCSpecialsPlugin extends JavaPlugin implements Listener {
         SectionDefinition section = SbpcAPI.getCurrentSectionDefinition(uuid, true);
         if (section == null) return false;
 
-        // Match by section "type" string, if configured
-        if (cond.getRequireType() != null) {
-            String secType = section.getType();
-            if (secType == null || !secType.equalsIgnoreCase(cond.getRequireType())) {
-                return false;
-            }
-        }
-
-        // Match by section index range, if configured
         String sectionId = section.getId();
         int idx = SbpcAPI.getSectionIndex(sectionId);
         if (idx < 0) {
+            logSectionMismatch(def, player, SectionMatchResult.denied("Could not determine section index for " + sectionId));
             return false;
         }
 
-        Integer minIndex = cond.getMinIndex();
-        Integer maxIndex = cond.getMaxIndex();
-
-        if (minIndex != null && idx < minIndex) {
-            return false;
+        SectionMatchContext context = new SectionMatchContext(sectionId, section.getType(), idx);
+        SectionMatchResult result = SectionMatcher.evaluate(cond, context);
+        if (!result.isAllowed()) {
+            logSectionMismatch(def, player, result);
         }
-        if (maxIndex != null && idx > maxIndex) {
-            return false;
-        }
+        return result.isAllowed();
+    }
 
-        return true;
+    private void logSectionMismatch(SpecialDefinition def, Player player, SectionMatchResult result) {
+        if (result == null || result.isAllowed()) {
+            return;
+        }
+        String playerName = player != null ? player.getName() : "unknown";
+        getLogger().info("Special " + def.getId() + " not applied for " + playerName + ": " + result.getReason());
     }
 
     // ------------------------------------------------------------------------
@@ -535,6 +541,21 @@ public class SBPCSpecialsPlugin extends JavaPlugin implements Listener {
 
     private String color(String msg) {
         return ChatColor.translateAlternateColorCodes('&', msg);
+    }
+
+    private void sendSectionApplicabilityMessage(Player player, SpecialDefinition.SectionCondition condition) {
+        if (condition == null) {
+            return;
+        }
+
+        if (condition.isAppliesToAllSections()) {
+            player.sendMessage(ChatColor.YELLOW + "This special applies to all sections.");
+            return;
+        }
+
+        if (condition.getAllowedSections() != null && !condition.getAllowedSections().isEmpty()) {
+            player.sendMessage(ChatColor.YELLOW + "Allowed sections: " + String.join(", ", condition.getAllowedSections()));
+        }
     }
 
     // ------------------------------------------------------------------------

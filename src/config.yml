@@ -9,6 +9,7 @@ specials:
       item-type: PALE_OAK_LOG
     section:
       require-type: "SPECIAL"
+      applies-to-all-sections: true
     reward:
       auto-complete-section: true
       speed-bonus-percent: 0.0
@@ -30,6 +31,7 @@ specials:
       item-type: WHEAT
     section:
       require-type: "SPECIAL"
+      applies-to-all-sections: true
     reward:
       auto-complete-section: true
       speed-bonus-percent: 0.0
@@ -51,6 +53,7 @@ specials:
       item-type: DIAMOND
     section:
       require-type: "SPECIAL"
+      applies-to-all-sections: true
     reward:
       auto-complete-section: true
       speed-bonus-percent: 0.0
@@ -72,6 +75,7 @@ specials:
       item-type: OBSIDIAN
     section:
       require-type: "SPECIAL"
+      applies-to-all-sections: true
     reward:
       auto-complete-section: true
       speed-bonus-percent: 0.0
@@ -94,6 +98,7 @@ specials:
       item-type: RED_BED
     section:
       require-type: "SPECIAL"
+      applies-to-all-sections: true
     reward:
       auto-complete-section: true
       speed-bonus-percent: 0.0
@@ -116,6 +121,7 @@ specials:
       item-type: EMERALD_BLOCK
     section:
       require-type: "SPECIAL"
+      applies-to-all-sections: true
     reward:
       auto-complete-section: false
       speed-bonus-percent: 800.0
@@ -137,6 +143,7 @@ specials:
       item-type: REDSTONE_LAMP
     section:
       require-type: "SPECIAL"
+      applies-to-all-sections: true
     reward:
       auto-complete-section: true
       speed-bonus-percent: 0.0
@@ -158,6 +165,7 @@ specials:
       item-type: SCAFFOLDING
     section:
       require-type: "SPECIAL"
+      applies-to-all-sections: true
     reward:
       auto-complete-section: false
       speed-bonus-percent: 800.0
@@ -180,6 +188,7 @@ specials:
       item-type: WAYFINDER_ARMOR_TRIM_SMITHING_TEMPLATE   # Shipwreck trim template
     section:
       require-type: "SPECIAL"
+      applies-to-all-sections: true
     reward:
       auto-complete-section: false
       speed-bonus-percent: 800.0
@@ -201,6 +210,7 @@ specials:
       item-type: CREEPER_HEAD
     section:
       require-type: "SPECIAL"
+      applies-to-all-sections: true
     reward:
       auto-complete-section: true
       speed-bonus-percent: 0.0
@@ -220,6 +230,7 @@ specials:
       killer-must-be-player: true
     section:
       require-type: "SPECIAL"
+      applies-to-all-sections: true
     reward:
       auto-complete-section: false
       speed-bonus-percent: 0.0
@@ -239,6 +250,7 @@ specials:
       killer-must-be-player: true
     section:
       require-type: "SPECIAL"
+      applies-to-all-sections: true
     reward:
       auto-complete-section: false
       speed-bonus-percent: 0.0
@@ -260,6 +272,7 @@ specials:
       item-type: NETHERITE_SCRAP
     section:
       require-type: "SPECIAL"
+      applies-to-all-sections: true
     reward:
       auto-complete-section: true
       speed-bonus-percent: 0.0
@@ -281,6 +294,7 @@ specials:
       killer-must-be-player: true
     section:
       require-type: "SPECIAL"
+      applies-to-all-sections: true
     reward:
       auto-complete-section: false
       speed-bonus-percent: 0.0
@@ -300,6 +314,7 @@ specials:
       killer-must-be-player: true
     section:
       require-type: "SPECIAL"
+      applies-to-all-sections: true
     reward:
       auto-complete-section: false
       speed-bonus-percent: 0.0
@@ -322,6 +337,7 @@ specials:
       item-type: CHORUS_FRUIT
     section:
       require-type: "SPECIAL"
+      applies-to-all-sections: true
     reward:
       auto-complete-section: true
       speed-bonus-percent: 0.0
@@ -341,6 +357,7 @@ specials:
       killer-must-be-player: true
     section:
       require-type: "SPECIAL"
+      applies-to-all-sections: true
     reward:
       auto-complete-section: false
       speed-bonus-percent: 0.0
@@ -360,6 +377,7 @@ specials:
       killer-must-be-player: true
     section:
       require-type: "SPECIAL"
+      applies-to-all-sections: true
     reward:
       auto-complete-section: false
       speed-bonus-percent: 0.0
@@ -381,6 +399,7 @@ specials:
       killer-must-be-player: true
     section:
       require-type: "SPECIAL"
+      applies-to-all-sections: true
     reward:
       auto-complete-section: true
       speed-bonus-percent: 0.0
@@ -400,6 +419,7 @@ specials:
       killer-must-be-player: true
     section:
       require-type: "SPECIAL"
+      applies-to-all-sections: true
     reward:
       auto-complete-section: false
       speed-bonus-percent: 0.0
@@ -422,6 +442,7 @@ specials:
       item-type: NETHER_STAR
     section:
       require-type: "SPECIAL"
+      applies-to-all-sections: true
     reward:
       auto-complete-section: false
       speed-bonus-percent: 800.0
@@ -444,6 +465,7 @@ specials:
       killer-must-be-player: true
     section:
       require-type: "SPECIAL"
+      applies-to-all-sections: true
     reward:
       auto-complete-section: true
       speed-bonus-percent: 0.0
@@ -463,6 +485,7 @@ specials:
       killer-must-be-player: true
     section:
       require-type: "SPECIAL"
+      applies-to-all-sections: true
     reward:
       auto-complete-section: true
       speed-bonus-percent: 0.0
@@ -482,6 +505,7 @@ specials:
       killer-must-be-player: true
     section:
       require-type: "SPECIAL"
+      applies-to-all-sections: true
     reward:
       auto-complete-section: false
       speed-bonus-percent: 0.0
@@ -503,6 +527,7 @@ specials:
       item-type: NETHERITE_BLOCK
     section:
       require-type: "SPECIAL"
+      applies-to-all-sections: true
     reward:
       auto-complete-section: false
       speed-bonus-percent: 800.0
@@ -524,6 +549,7 @@ specials:
       item-type: MACE
     section:
       require-type: "SPECIAL"
+      applies-to-all-sections: true
     reward:
       auto-complete-section: true
       speed-bonus-percent: 0.0
@@ -545,6 +571,7 @@ specials:
       entry-id: "haste2_special"     # define this as a hidden entry in SBPC
     section:
       require-type: "SPECIAL"
+      applies-to-all-sections: true
     reward:
       auto-complete-section: false
       speed-bonus-percent: 800.0
@@ -566,6 +593,7 @@ specials:
       item-type: DRAGON_EGG
     section:
       require-type: "SPECIAL"
+      applies-to-all-sections: true
     reward:
       auto-complete-section: false
       speed-bonus-percent: 800.0
