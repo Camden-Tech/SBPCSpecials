@@ -16,6 +16,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import me.BaddCamden.SBPC.api.SbpcAPI;
@@ -44,6 +45,7 @@ public class SBPCSpecialsPlugin extends JavaPlugin implements Listener {
 
     private final Map<String, SpecialDefinition> specialsById = new HashMap<>();
     private final Map<EntityType, List<SpecialDefinition>> deathSpecials = new HashMap<>();
+    private final List<SpecialDefinition> deathSpecialsAny = new ArrayList<>();
     private final Map<Material, List<SpecialDefinition>> pickupSpecials = new HashMap<>();
     private final Map<String, List<SpecialDefinition>> unlockEntrySpecials = new HashMap<>();
 
@@ -94,6 +96,7 @@ public class SBPCSpecialsPlugin extends JavaPlugin implements Listener {
     private void loadSpecialsFromConfig() {
         specialsById.clear();
         deathSpecials.clear();
+        deathSpecialsAny.clear();
         pickupSpecials.clear();
         unlockEntrySpecials.clear();
 
@@ -229,6 +232,9 @@ public class SBPCSpecialsPlugin extends JavaPlugin implements Listener {
                 case ENTITY_DEATH:
                     if (entityType != null) {
                         deathSpecials.computeIfAbsent(entityType, k -> new ArrayList<>()).add(def);
+                    } else {
+                        // No entity specified: allow this special to trigger on any mob kill.
+                        deathSpecialsAny.add(def);
                     }
                     break;
                 case ENTITY_PICKUP:
@@ -278,6 +284,7 @@ public class SBPCSpecialsPlugin extends JavaPlugin implements Listener {
                         double percent = bonusesSec.getDouble(specialId + ".percent", 0.0);
                         int skip = bonusesSec.getInt(specialId + ".skip-seconds", 0);
                         data.addOrUpdateBonus(specialId, percent, skip);
+                        data.markApplied(specialId); // bonuses imply the special was already applied
                     }
                 }
 
@@ -291,6 +298,27 @@ public class SBPCSpecialsPlugin extends JavaPlugin implements Listener {
                 getLogger().warning("Invalid player UUID in Players folder: " + name);
             }
         }
+    }
+
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        Player player = event.getPlayer();
+        UUID uuid = player.getUniqueId();
+
+        PlayerSpecialData data = playerData.get(uuid);
+        if (data == null) {
+            return;
+        }
+
+        // Reapply any stored bonuses on join so progress timers stay in sync after restarts.
+        progressSpeedService.applySpeedBonuses(
+                uuid,
+                data,
+                "SBPCSpecials persisted bonuses on join"
+        );
+
+        // Specials completed in past sections may become applicable now.
+        applyPendingSpecialsForCurrentSection(player);
     }
 
     private void savePlayerData() {
@@ -566,14 +594,21 @@ public class SBPCSpecialsPlugin extends JavaPlugin implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onEntityDeath(EntityDeathEvent event) {
-        EntityType type = event.getEntityType();
-        List<SpecialDefinition> defs = deathSpecials.get(type);
-        if (defs == null || defs.isEmpty()) {
+        Player killer = event.getEntity().getKiller();
+        if (killer == null) {
             return;
         }
 
-        Player killer = event.getEntity().getKiller();
-        if (killer == null) {
+        EntityType type = event.getEntityType();
+        List<SpecialDefinition> defs = new ArrayList<>();
+
+        List<SpecialDefinition> typeDefs = deathSpecials.get(type);
+        if (typeDefs != null) {
+            defs.addAll(typeDefs);
+        }
+        defs.addAll(deathSpecialsAny);
+
+        if (defs.isEmpty()) {
             return;
         }
 
