@@ -10,6 +10,9 @@ import java.util.Set;
  * Per-player specials state:
  * - which specials are completed
  * - accumulated speed bonuses per special
+ *
+ * Stacking rule: individual speed bonus percents and skip seconds are summed
+ * across applied specials.
  */
 public class PlayerSpecialData {
 
