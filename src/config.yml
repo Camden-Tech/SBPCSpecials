@@ -1,0 +1,579 @@
+specials:
+
+  # Wood Tools + Leather Armor (wood_leather)
+  # "Having a Pale Log (even if not obtained naturally) auto completes this entire section."
+  wood_leather_pale_log_auto:
+    trigger:
+      type: ENTITY_PICKUP
+      entity-type: PLAYER
+      item-type: PALE_OAK_LOG
+    section:
+      require-type: "SPECIAL"
+    reward:
+      auto-complete-section: true
+      speed-bonus-percent: 0.0
+      speed-bonus-skip-seconds: 0
+      session-time-skip-seconds: 0
+    scope:
+      once-per-player: true
+      once-per-server: false
+    messages:
+      player: "&aYour Pale Log lets you skip this section."
+      broadcast: "&e{player} &7completed the &6Wood Tools + Leather Armor &7special."
+
+  # Wheat Seeds (wheat_seeds)
+  # "Having Wheat (even if not obtained naturally) auto completes this section."
+  wheat_seeds_wheat_auto:
+    trigger:
+      type: ENTITY_PICKUP
+      entity-type: PLAYER
+      item-type: WHEAT
+    section:
+      require-type: "SPECIAL"
+    reward:
+      auto-complete-section: true
+      speed-bonus-percent: 0.0
+      speed-bonus-skip-seconds: 0
+      session-time-skip-seconds: 0
+    scope:
+      once-per-player: true
+      once-per-server: false
+    messages:
+      player: "&aHaving Wheat completes the Wheat Seeds section."
+      broadcast: "&e{player} &7completed the &aWheat Seeds &7special."
+
+  # Stone Tools + Chainmail Armor (stone_chainmail)
+  # "Having a Diamond (even if not obtained naturally) auto completes this entire section."
+  stone_chainmail_diamond_auto:
+    trigger:
+      type: ENTITY_PICKUP
+      entity-type: PLAYER
+      item-type: DIAMOND
+    section:
+      require-type: "SPECIAL"
+    reward:
+      auto-complete-section: true
+      speed-bonus-percent: 0.0
+      speed-bonus-skip-seconds: 0
+      session-time-skip-seconds: 0
+    scope:
+      once-per-player: true
+      once-per-server: false
+    messages:
+      player: "&bA Diamond instantly completes this section."
+      broadcast: "&e{player} &7completed the &bStone Tools + Chainmail Armor &7special."
+
+  # Shield + Bucket + Flint and Steel (shield_bucket_fns)
+  # "Having an Obsidian (even if not obtained naturally) auto completes this entire section."
+  shield_bucket_fns_obsidian_auto:
+    trigger:
+      type: ENTITY_PICKUP
+      entity-type: PLAYER
+      item-type: OBSIDIAN
+    section:
+      require-type: "SPECIAL"
+    reward:
+      auto-complete-section: true
+      speed-bonus-percent: 0.0
+      speed-bonus-skip-seconds: 0
+      session-time-skip-seconds: 0
+    scope:
+      once-per-player: true
+      once-per-server: false
+    messages:
+      player: "&5Your Obsidian completes this section."
+      broadcast: "&e{player} &7completed the &5Shield/Bucket/Flint &7special."
+
+  # Armor Padding (armor_padding)
+  # "Having a Red Bed (even if not obtained naturally) auto completes this section.
+  #  Additional time reduction: crafting or using Armor Padding."
+  armor_padding_red_bed_auto:
+    trigger:
+      type: ENTITY_PICKUP
+      entity-type: PLAYER
+      item-type: RED_BED
+    section:
+      require-type: "SPECIAL"
+    reward:
+      auto-complete-section: true
+      speed-bonus-percent: 0.0
+      speed-bonus-skip-seconds: 0
+      session-time-skip-seconds: 0
+    scope:
+      once-per-player: true
+      once-per-server: false
+    messages:
+      player: "&cA Red Bed lets you skip the Armor Padding section."
+      broadcast: "&e{player} &7completed the &cArmor Padding &7special."
+
+  # Early Enchants Tier I (enchants_tier1)
+  # "Having an Emerald Block ... adds 800% to the progress speed for this section.
+  #  Additional time reduction: enchanting/disenchanting items or killing mobs."
+  enchants_tier1_emerald_block_boost:
+    trigger:
+      type: ENTITY_PICKUP
+      entity-type: PLAYER
+      item-type: EMERALD_BLOCK
+    section:
+      require-type: "SPECIAL"
+    reward:
+      auto-complete-section: false
+      speed-bonus-percent: 800.0
+      speed-bonus-skip-seconds: 0
+      session-time-skip-seconds: 0
+    scope:
+      once-per-player: true
+      once-per-server: false
+    messages:
+      player: "&aYour Emerald Block massively speeds up this enchants section."
+      broadcast: "&e{player} &7activated the &aEmerald Block &7special."
+
+  # Copper Tools + Copper Armor (copper_tools_armor)
+  # "Having a Redstone Lamp ... auto completes this entire section."
+  copper_tools_redstone_lamp_auto:
+    trigger:
+      type: ENTITY_PICKUP
+      entity-type: PLAYER
+      item-type: REDSTONE_LAMP
+    section:
+      require-type: "SPECIAL"
+    reward:
+      auto-complete-section: true
+      speed-bonus-percent: 0.0
+      speed-bonus-skip-seconds: 0
+      session-time-skip-seconds: 0
+    scope:
+      once-per-player: true
+      once-per-server: false
+    messages:
+      player: "&eRedstone Lamp completes the Copper Tools section."
+      broadcast: "&e{player} &7completed the &6Copper Tools + Armor &7special."
+
+  # Crossbow + Bow + Fishing Rod + Cobwebs (bows_crossbows_fishing_cobwebs)
+  # "Having a Scaffolding ... adds 800% to the progress speed for this section."
+  bows_crossbows_scaffolding_boost:
+    trigger:
+      type: ENTITY_PICKUP
+      entity-type: PLAYER
+      item-type: SCAFFOLDING
+    section:
+      require-type: "SPECIAL"
+    reward:
+      auto-complete-section: false
+      speed-bonus-percent: 800.0
+      speed-bonus-skip-seconds: 0
+      session-time-skip-seconds: 0
+    scope:
+      once-per-player: true
+      once-per-server: false
+    messages:
+      player: "&6Scaffolding makes this section much faster."
+      broadcast: "&e{player} &7activated the &6Scaffolding &7special."
+
+  # Mid Enchants Tier II (enchants_tier2)
+  # "Having a Shipwreck armor trim ... adds 800% to the progress speed for this section.
+  #  Additional time reduction: enchanting/disenchanting items or killing mobs."
+  enchants_tier2_shipwreck_trim_boost:
+    trigger:
+      type: ENTITY_PICKUP
+      entity-type: PLAYER
+      item-type: WAYFINDER_ARMOR_TRIM_SMITHING_TEMPLATE   # Shipwreck trim template
+    section:
+      require-type: "SPECIAL"
+    reward:
+      auto-complete-section: false
+      speed-bonus-percent: 800.0
+      speed-bonus-skip-seconds: 0
+      session-time-skip-seconds: 0
+    scope:
+      once-per-player: true
+      once-per-server: false
+    messages:
+      player: "&3The Shipwreck armor trim greatly boosts this enchants section."
+      broadcast: "&e{player} &7activated the &3Shipwreck Trim &7special."
+
+  # TNT + Fireworks + TNT Minecart + End Crystal (tnt_fireworks)
+  # "Having a Creeper Head ... auto completes this section. Additional time reduction: killing Creepers or Ghasts."
+  tnt_fireworks_creeper_head_auto:
+    trigger:
+      type: ENTITY_PICKUP
+      entity-type: PLAYER
+      item-type: CREEPER_HEAD
+    section:
+      require-type: "SPECIAL"
+    reward:
+      auto-complete-section: true
+      speed-bonus-percent: 0.0
+      speed-bonus-skip-seconds: 0
+      session-time-skip-seconds: 0
+    scope:
+      once-per-player: true
+      once-per-server: false
+    messages:
+      player: "&aA Creeper Head completes this explosives section."
+      broadcast: "&e{player} &7completed the &aTNT & Fireworks &7special."
+
+  tnt_fireworks_creeper_kill_bonus:
+    trigger:
+      type: ENTITY_DEATH
+      entity-type: CREEPER
+      killer-must-be-player: true
+    section:
+      require-type: "SPECIAL"
+    reward:
+      auto-complete-section: false
+      speed-bonus-percent: 0.0
+      speed-bonus-skip-seconds: 10
+      session-time-skip-seconds: 0
+    scope:
+      once-per-player: false
+      once-per-server: false
+    messages:
+      player: "&aKilling a Creeper slightly speeds up this section."
+      broadcast: ""
+
+  tnt_fireworks_ghast_kill_bonus:
+    trigger:
+      type: ENTITY_DEATH
+      entity-type: GHAST
+      killer-must-be-player: true
+    section:
+      require-type: "SPECIAL"
+    reward:
+      auto-complete-section: false
+      speed-bonus-percent: 0.0
+      speed-bonus-skip-seconds: 15
+      session-time-skip-seconds: 0
+    scope:
+      once-per-player: false
+      once-per-server: false
+    messages:
+      player: "&aKilling a Ghast gives extra time reduction."
+      broadcast: ""
+
+  # Iron Tools + Iron Armor (iron_tools_armor)
+  # "Having a Netherite Scrap ... auto completes this entire section."
+  iron_tools_netherite_scrap_auto:
+    trigger:
+      type: ENTITY_PICKUP
+      entity-type: PLAYER
+      item-type: NETHERITE_SCRAP
+    section:
+      require-type: "SPECIAL"
+    reward:
+      auto-complete-section: true
+      speed-bonus-percent: 0.0
+      speed-bonus-skip-seconds: 0
+      session-time-skip-seconds: 0
+    scope:
+      once-per-player: true
+      once-per-server: false
+    messages:
+      player: "&8Finding Netherite Scrap completes this iron gear section."
+      broadcast: "&e{player} &7completed the &8Iron Tools + Armor &7special."
+
+  # Blaze Powder (blaze_powder)
+  # "Killing a Blaze speeds this progress by 100%. Additional time reduction: killing Blazes or Wither Skeletons."
+  blaze_powder_blaze_kill_bonus:
+    trigger:
+      type: ENTITY_DEATH
+      entity-type: BLAZE
+      killer-must-be-player: true
+    section:
+      require-type: "SPECIAL"
+    reward:
+      auto-complete-section: false
+      speed-bonus-percent: 0.0
+      speed-bonus-skip-seconds: 30
+      session-time-skip-seconds: 0
+    scope:
+      once-per-player: false
+      once-per-server: false
+    messages:
+      player: "&6Killing a Blaze speeds up this section."
+      broadcast: ""
+
+  blaze_powder_wither_skeleton_kill_bonus:
+    trigger:
+      type: ENTITY_DEATH
+      entity-type: WITHER_SKELETON
+      killer-must-be-player: true
+    section:
+      require-type: "SPECIAL"
+    reward:
+      auto-complete-section: false
+      speed-bonus-percent: 0.0
+      speed-bonus-skip-seconds: 20
+      session-time-skip-seconds: 0
+    scope:
+      once-per-player: false
+      once-per-server: false
+    messages:
+      player: "&8Killing a Wither Skeleton gives extra time skip."
+      broadcast: ""
+
+  # Enderpearl + Wind Charge (enderpearl_wind_charge)
+  # "Having a Chorus Fruit ... auto completes this section.
+  #  Additional time reduction: killing Endermen or Breezes."
+  enderpearl_chorus_fruit_auto:
+    trigger:
+      type: ENTITY_PICKUP
+      entity-type: PLAYER
+      item-type: CHORUS_FRUIT
+    section:
+      require-type: "SPECIAL"
+    reward:
+      auto-complete-section: true
+      speed-bonus-percent: 0.0
+      speed-bonus-skip-seconds: 0
+      session-time-skip-seconds: 0
+    scope:
+      once-per-player: true
+      once-per-server: false
+    messages:
+      player: "&dChorus Fruit completes this teleportation section."
+      broadcast: "&e{player} &7completed the &dEnderpearl/Wind Charge &7special."
+
+  enderpearl_enderman_kill_bonus:
+    trigger:
+      type: ENTITY_DEATH
+      entity-type: ENDERMAN
+      killer-must-be-player: true
+    section:
+      require-type: "SPECIAL"
+    reward:
+      auto-complete-section: false
+      speed-bonus-percent: 0.0
+      speed-bonus-skip-seconds: 15
+      session-time-skip-seconds: 0
+    scope:
+      once-per-player: false
+      once-per-server: false
+    messages:
+      player: "&5Killing an Enderman speeds up this section."
+      broadcast: ""
+
+  enderpearl_breeze_kill_bonus:
+    trigger:
+      type: ENTITY_DEATH
+      entity-type: BREEZE
+      killer-must-be-player: true
+    section:
+      require-type: "SPECIAL"
+    reward:
+      auto-complete-section: false
+      speed-bonus-percent: 0.0
+      speed-bonus-skip-seconds: 15
+      session-time-skip-seconds: 0
+    scope:
+      once-per-player: false
+      once-per-server: false
+    messages:
+      player: "&bKilling a Breeze speeds up this section."
+      broadcast: ""
+
+  # Heart Meds (heart_meds)
+  # "This section can only be sped up by killing mobs. Killing a player auto completes this section."
+  heart_meds_player_kill_auto:
+    trigger:
+      type: ENTITY_DEATH
+      entity-type: PLAYER
+      killer-must-be-player: true
+    section:
+      require-type: "SPECIAL"
+    reward:
+      auto-complete-section: true
+      speed-bonus-percent: 0.0
+      speed-bonus-skip-seconds: 0
+      session-time-skip-seconds: 0
+    scope:
+      once-per-player: true
+      once-per-server: false
+    messages:
+      player: "&4Killing a player instantly completes Heart Meds."
+      broadcast: "&e{player} &7completed the &4Heart Meds &7special."
+
+  heart_meds_mob_kill_bonus:
+    trigger:
+      type: ENTITY_DEATH
+      entity-type: ZOMBIE   # placeholder generic hostile; extend if desired
+      killer-must-be-player: true
+    section:
+      require-type: "SPECIAL"
+    reward:
+      auto-complete-section: false
+      speed-bonus-percent: 0.0
+      speed-bonus-skip-seconds: 5
+      session-time-skip-seconds: 0
+    scope:
+      once-per-player: false
+      once-per-server: false
+    messages:
+      player: "&aKilling mobs speeds up this section."
+      broadcast: ""
+
+  # Higher Enchants Tier III (enchants_tier3)
+  # "Having a Nether Star ... adds 800% to the progress speed for this section.
+  #  Additional time reduction: enchanting/disenchanting items or killing mobs."
+  enchants_tier3_nether_star_boost:
+    trigger:
+      type: ENTITY_PICKUP
+      entity-type: PLAYER
+      item-type: NETHER_STAR
+    section:
+      require-type: "SPECIAL"
+    reward:
+      auto-complete-section: false
+      speed-bonus-percent: 800.0
+      speed-bonus-skip-seconds: 0
+      session-time-skip-seconds: 0
+    scope:
+      once-per-player: true
+      once-per-server: false
+    messages:
+      player: "&fA Nether Star supercharges this enchants section."
+      broadcast: "&e{player} &7activated the &fNether Star &7special."
+
+  # Shulker Shell (shulker_shell)
+  # "Killing a Shulker or an Enderman while in the End auto completes it.
+  #  Additional time reduction: killing Shulkers."
+  shulker_shell_shulker_kill_auto:
+    trigger:
+      type: ENTITY_DEATH
+      entity-type: SHULKER
+      killer-must-be-player: true
+    section:
+      require-type: "SPECIAL"
+    reward:
+      auto-complete-section: true
+      speed-bonus-percent: 0.0
+      speed-bonus-skip-seconds: 0
+      session-time-skip-seconds: 0
+    scope:
+      once-per-player: true
+      once-per-server: false
+    messages:
+      player: "&dKilling a Shulker completes this section."
+      broadcast: "&e{player} &7completed the &dShulker Shell &7special."
+
+  shulker_shell_enderman_kill_auto:
+    trigger:
+      type: ENTITY_DEATH
+      entity-type: ENDERMAN
+      killer-must-be-player: true
+    section:
+      require-type: "SPECIAL"
+    reward:
+      auto-complete-section: true
+      speed-bonus-percent: 0.0
+      speed-bonus-skip-seconds: 0
+      session-time-skip-seconds: 0
+    scope:
+      once-per-player: true
+      once-per-server: false
+    messages:
+      player: "&5Killing an Enderman in the End completes this section."
+      broadcast: ""
+
+  shulker_shell_shulker_kill_bonus:
+    trigger:
+      type: ENTITY_DEATH
+      entity-type: SHULKER
+      killer-must-be-player: true
+    section:
+      require-type: "SPECIAL"
+    reward:
+      auto-complete-section: false
+      speed-bonus-percent: 0.0
+      speed-bonus-skip-seconds: 20
+      session-time-skip-seconds: 0
+    scope:
+      once-per-player: false
+      once-per-server: false
+    messages:
+      player: "&aKilling Shulkers gives extra time reduction."
+      broadcast: ""
+
+  # Diamond Tools + Diamond Armor (diamond_tools_armor)
+  # "Having a Netherite Block ... adds 800% to the progress speed for this section."
+  diamond_tools_netherite_block_boost:
+    trigger:
+      type: ENTITY_PICKUP
+      entity-type: PLAYER
+      item-type: NETHERITE_BLOCK
+    section:
+      require-type: "SPECIAL"
+    reward:
+      auto-complete-section: false
+      speed-bonus-percent: 800.0
+      speed-bonus-skip-seconds: 0
+      session-time-skip-seconds: 0
+    scope:
+      once-per-player: true
+      once-per-server: false
+    messages:
+      player: "&8A Netherite Block massively speeds up this section."
+      broadcast: "&e{player} &7activated the &8Netherite Block &7special."
+
+  # Elytra (elytra)
+  # "Having a Mace (even if not obtained naturally) auto completes this entire section."
+  elytra_mace_auto:
+    trigger:
+      type: ENTITY_PICKUP
+      entity-type: PLAYER
+      item-type: MACE
+    section:
+      require-type: "SPECIAL"
+    reward:
+      auto-complete-section: true
+      speed-bonus-percent: 0.0
+      speed-bonus-skip-seconds: 0
+      session-time-skip-seconds: 0
+    scope:
+      once-per-player: true
+      once-per-server: false
+    messages:
+      player: "&6A Mace completes the Elytra section."
+      broadcast: "&e{player} &7completed the &6Elytra &7special."
+
+  # Top Enchants Tier IV (enchants_tier4)
+  # "Having the Haste II effect adds 800% to the progress speed for this section.
+  #  Additional time reduction: enchanting/disenchanting items or killing mobs."
+  enchants_tier4_haste2_boost:
+    trigger:
+      type: UNLOCK_ENTRY
+      entry-id: "haste2_special"     # define this as a hidden entry in SBPC
+    section:
+      require-type: "SPECIAL"
+    reward:
+      auto-complete-section: false
+      speed-bonus-percent: 800.0
+      speed-bonus-skip-seconds: 0
+      session-time-skip-seconds: 0
+    scope:
+      once-per-player: true
+      once-per-server: false
+    messages:
+      player: "&eGaining Haste II supercharges this enchants section."
+      broadcast: "&e{player} &7activated the &eHaste II &7special."
+
+  # Netherite Tools + Netherite Armor (netherite_tools_armor)
+  # "Having a Dragon Egg ... adds 800% to the progress speed for this section."
+  netherite_tools_dragon_egg_boost:
+    trigger:
+      type: ENTITY_PICKUP
+      entity-type: PLAYER
+      item-type: DRAGON_EGG
+    section:
+      require-type: "SPECIAL"
+    reward:
+      auto-complete-section: false
+      speed-bonus-percent: 800.0
+      speed-bonus-skip-seconds: 0
+      session-time-skip-seconds: 0
+    scope:
+      once-per-player: true
+      once-per-server: true
+    messages:
+      player: "&dThe Dragon Egg massively boosts Netherite Tools + Armor."
+      broadcast: "&e{player} &7claimed the &dDragon Egg &7special."

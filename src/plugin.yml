@@ -1,0 +1,7 @@
+name: SBPCSpecials
+main: me.BaddCamden.SBPCSpecials.SBPCSpecialsPlugin
+version: 1.0.0
+api-version: 1.21
+depend:
+  - SBPC
+description: "All SBPC specials and additional time-reducing event logic."
