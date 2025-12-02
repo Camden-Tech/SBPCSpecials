@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * Per-player specials state:
@@ -38,6 +39,7 @@ public class PlayerSpecialData {
     private final Map<String, SpeedBonus> bonusesBySpecialId = new HashMap<>();
     private final Set<String> completedSpecials = new HashSet<>();
     private final Set<String> appliedSpecials = new HashSet<>();
+    private final Map<String, Set<UUID>> uniqueKillsByKey = new HashMap<>();
 
 
     public void addOrUpdateBonus(String specialId, double percent, int skipSeconds) {
@@ -70,6 +72,32 @@ public class PlayerSpecialData {
 
     public Set<String> getCompletedSpecials() {
         return Collections.unmodifiableSet(completedSpecials);
+    }
+
+    public boolean recordUniqueKill(String key, UUID victimUuid) {
+        if (key == null || victimUuid == null) {
+            return false;
+        }
+
+        Set<UUID> kills = uniqueKillsByKey.computeIfAbsent(key, k -> new HashSet<>());
+        return kills.add(victimUuid);
+    }
+
+    public int getUniqueKillCount(String key) {
+        Set<UUID> kills = uniqueKillsByKey.get(key);
+        return kills != null ? kills.size() : 0;
+    }
+
+    public Map<String, Set<UUID>> getUniqueKillsByKey() {
+        return Collections.unmodifiableMap(uniqueKillsByKey);
+    }
+
+    public void setUniqueKills(String key, Set<UUID> kills) {
+        if (key == null || kills == null) {
+            return;
+        }
+
+        uniqueKillsByKey.put(key, new HashSet<>(kills));
     }
 
     public double getTotalSpeedPercent() {

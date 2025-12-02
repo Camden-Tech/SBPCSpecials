@@ -3,6 +3,7 @@ package me.BaddCamden.SBPCSpecials;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -55,6 +56,14 @@ public class SBPCSpecialsPlugin extends JavaPlugin implements Listener {
 
     private final Map<UUID, PlayerSpecialData> playerData = new HashMap<>();
     private final Set<String> completedSpecialsServerWide = new HashSet<>();
+
+    private static final String MURDER_SECTION_ID = "murder";
+    private static final String MASSACRE_SECTION_ID = "massacre";
+    private static final String MASSACRE_UNIQUE_KEY = "massacre_unique_kills";
+    private static final int MASSACRE_MAX_UNIQUE_KILLS = 3;
+    private static final int MASSACRE_ENTRY_SKIP_SECONDS = 3600;
+    private static final String SERIAL_KILLER_SECTION_ID = "serial_killer";
+    private static final int SERIAL_KILLER_KILL_SKIP_SECONDS = 1800;
 
     private File playersFolder;
     private File specialsDataFile;
@@ -293,6 +302,21 @@ public class SBPCSpecialsPlugin extends JavaPlugin implements Listener {
                     data.markCompleted(s);
                 }
 
+                ConfigurationSection uniqueSec = cfg.getConfigurationSection("unique-kills");
+                if (uniqueSec != null) {
+                    for (String key : uniqueSec.getKeys(false)) {
+                        List<String> victimList = uniqueSec.getStringList(key);
+                        Set<UUID> victims = new HashSet<>();
+                        for (String victimId : victimList) {
+                            try {
+                                victims.add(UUID.fromString(victimId));
+                            } catch (IllegalArgumentException ignored) {
+                            }
+                        }
+                        data.setUniqueKills(key, victims);
+                    }
+                }
+
                 playerData.put(uuid, data);
             } catch (IllegalArgumentException ex) {
                 getLogger().warning("Invalid player UUID in Players folder: " + name);
@@ -344,6 +368,14 @@ public class SBPCSpecialsPlugin extends JavaPlugin implements Listener {
             }
 
             cfg.set("completed-specials", new ArrayList<>(data.getCompletedSpecials()));
+
+            ConfigurationSection uniqueSec = cfg.createSection("unique-kills");
+            for (Map.Entry<String, Set<UUID>> entry : data.getUniqueKillsByKey().entrySet()) {
+                List<String> victims = entry.getValue().stream()
+                        .map(UUID::toString)
+                        .collect(Collectors.toList());
+                uniqueSec.set(entry.getKey(), victims);
+            }
 
             try {
                 cfg.save(file);
@@ -569,6 +601,55 @@ public class SBPCSpecialsPlugin extends JavaPlugin implements Listener {
         applySpecialReward(def, player, contextEntity);
     }
 
+    private void handlePvpSectionSpecials(Player killer, Player victim) {
+        if (killer == null || victim == null) {
+            return;
+        }
+
+        if (killer.getUniqueId().equals(victim.getUniqueId())) {
+            return; // ignore self kills
+        }
+
+        SectionDefinition section = SbpcAPI.getCurrentSectionDefinition(killer.getUniqueId(), true);
+        if (section == null) {
+            return;
+        }
+
+        String sectionId = section.getId().toLowerCase(Locale.ROOT);
+
+        if (MURDER_SECTION_ID.equals(sectionId)) {
+            SbpcAPI.completeCurrentSection(killer.getUniqueId());
+            killer.sendMessage(ChatColor.RED + "Killing a player completed the Murder section.");
+            return;
+        }
+
+        if (MASSACRE_SECTION_ID.equals(sectionId)) {
+            PlayerSpecialData data = getOrCreatePlayerData(killer.getUniqueId());
+            if (data.recordUniqueKill(MASSACRE_UNIQUE_KEY, victim.getUniqueId())) {
+                int count = data.getUniqueKillCount(MASSACRE_UNIQUE_KEY);
+                if (count <= MASSACRE_MAX_UNIQUE_KILLS) {
+                    progressSpeedService.applySessionSkip(
+                            killer.getUniqueId(),
+                            MASSACRE_ENTRY_SKIP_SECONDS,
+                            "SBPCSpecials Massacre unique player kill " + count
+                    );
+                    killer.sendMessage(ChatColor.DARK_RED + "Unique player kill " + count
+                            + " recorded for Massacre.");
+                }
+            }
+            return;
+        }
+
+        if (SERIAL_KILLER_SECTION_ID.equals(sectionId)) {
+            progressSpeedService.applySessionSkip(
+                    killer.getUniqueId(),
+                    SERIAL_KILLER_KILL_SKIP_SECONDS,
+                    "SBPCSpecials Serial Killer player kill"
+            );
+            killer.sendMessage(ChatColor.DARK_PURPLE + "Player kill skipped 30 minutes in Serial Killer.");
+        }
+    }
+
     private String color(String msg) {
         return ChatColor.translateAlternateColorCodes('&', msg);
     }
@@ -597,6 +678,10 @@ public class SBPCSpecialsPlugin extends JavaPlugin implements Listener {
         Player killer = event.getEntity().getKiller();
         if (killer == null) {
             return;
+        }
+
+        if (event.getEntity() instanceof Player victimPlayer) {
+            handlePvpSectionSpecials(killer, victimPlayer);
         }
 
         EntityType type = event.getEntityType();
