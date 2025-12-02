@@ -101,11 +101,19 @@ public class SpecialDefinition {
         private final String requireType; // e.g. "SPECIAL"
         private final Integer minIndex;
         private final Integer maxIndex;
+        private final boolean appliesToAllSections;
+        private final java.util.List<String> allowedSections;
 
-        public SectionCondition(String requireType, Integer minIndex, Integer maxIndex) {
+        public SectionCondition(String requireType,
+                                Integer minIndex,
+                                Integer maxIndex,
+                                boolean appliesToAllSections,
+                                java.util.List<String> allowedSections) {
             this.requireType = requireType;
             this.minIndex = minIndex;
             this.maxIndex = maxIndex;
+            this.appliesToAllSections = appliesToAllSections;
+            this.allowedSections = java.util.Collections.unmodifiableList(allowedSections);
         }
 
         public String getRequireType() {
@@ -118,6 +126,14 @@ public class SpecialDefinition {
 
         public Integer getMaxIndex() {
             return maxIndex;
+        }
+
+        public boolean isAppliesToAllSections() {
+            return appliesToAllSections;
+        }
+
+        public java.util.List<String> getAllowedSections() {
+            return allowedSections;
         }
     }
 
