@@ -154,7 +154,6 @@ public class SectionProgressListener implements Listener {
         return Tag.CROPS.isTagged(type)
                 || Tag.FLOWERS.isTagged(type)
                 || Tag.SAPLINGS.isTagged(type)
-                || Tag.MUSHROOMS.isTagged(type)
                 || Tag.CAVE_VINES.isTagged(type)
                 || type.name().contains("VINE")
                 || type.name().contains("SAPLING")
@@ -163,7 +162,8 @@ public class SectionProgressListener implements Listener {
                 || type.name().contains("FUNGUS")
                 || type.name().contains("WART")
                 || type.name().contains("CACTUS")
-                || type.name().contains("SUGAR_CANE");
+                || type.name().contains("SUGAR_CANE")
+                || type.name().contains("MUSHROOM");
     }
 
     private boolean isPlayerPlaced(Block block) {
