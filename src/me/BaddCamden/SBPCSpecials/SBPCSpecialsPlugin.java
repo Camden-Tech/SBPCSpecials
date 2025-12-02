@@ -19,6 +19,7 @@ import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import me.BaddCamden.SBPC.api.SbpcAPI;
+import me.BaddCamden.SBPCSpecials.ProgressSpeedService;
 import me.BaddCamden.SBPC.events.UnlockItemEvent;
 import me.BaddCamden.SBPC.progress.SectionDefinition;
 
@@ -32,6 +33,9 @@ import me.BaddCamden.SBPC.progress.SectionDefinition;
  * - Section checks are done via section type (SectionDefinition.getType()) and index.
  */
 public class SBPCSpecialsPlugin extends JavaPlugin implements Listener {
+
+    private final ProgressSpeedService progressSpeedService =
+            new ProgressSpeedService(SbpcAPI::applyExternalTimeSkip);
 
     // ------------------------------------------------------------------------
     // Config-driven specials indexes
@@ -404,11 +408,22 @@ public class SBPCSpecialsPlugin extends JavaPlugin implements Listener {
 
         SpecialDefinition.RewardDefinition reward = def.getReward();
 
-        // (We no longer call applyAggregatedBonusToSbpc here.)
+        if (reward.getSpeedBonusPercent() != 0.0 || reward.getSpeedBonusSkipSeconds() != 0) {
+            data.addOrUpdateBonus(id, reward.getSpeedBonusPercent(), reward.getSpeedBonusSkipSeconds());
+        }
+
+        progressSpeedService.applySpeedBonuses(
+                uuid,
+                data,
+                "SBPCSpecials progress speed bonuses (" + id + ")"
+        );
 
         if (reward.getSessionTimeSkipSeconds() > 0) {
-            SbpcAPI.applyExternalTimeSkip(uuid, reward.getSessionTimeSkipSeconds(), 0.0,
-                    "SBPCSpecials special: " + id);
+            progressSpeedService.applySessionSkip(
+                    uuid,
+                    reward.getSessionTimeSkipSeconds(),
+                    "SBPCSpecials special: " + id
+            );
         }
 
         // NEW: auto-complete current section if configured
