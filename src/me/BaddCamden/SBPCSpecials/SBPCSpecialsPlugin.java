@@ -606,7 +606,10 @@ public class SBPCSpecialsPlugin extends JavaPlugin implements Listener {
         if (typeDefs != null) {
             defs.addAll(typeDefs);
         }
-        defs.addAll(deathSpecialsAny);
+        // "Any" death specials should ignore player deaths so PVP doesn't trigger mob-based bonuses.
+        if (type != EntityType.PLAYER) {
+            defs.addAll(deathSpecialsAny);
+        }
 
         if (defs.isEmpty()) {
             return;
