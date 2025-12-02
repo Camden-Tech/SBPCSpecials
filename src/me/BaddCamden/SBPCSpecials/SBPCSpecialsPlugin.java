@@ -20,6 +20,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import me.BaddCamden.SBPC.api.SbpcAPI;
 import me.BaddCamden.SBPCSpecials.ProgressSpeedService;
+import me.BaddCamden.SBPCSpecials.SectionProgressListener;
 import me.BaddCamden.SBPC.events.UnlockItemEvent;
 import me.BaddCamden.SBPC.progress.SectionDefinition;
 
@@ -70,6 +71,7 @@ public class SBPCSpecialsPlugin extends JavaPlugin implements Listener {
 
         // Register listeners
         Bukkit.getPluginManager().registerEvents(this, this);
+        Bukkit.getPluginManager().registerEvents(new SectionProgressListener(), this);
 
         // Initialize hook API
         SpecialsAPI.init(this);
