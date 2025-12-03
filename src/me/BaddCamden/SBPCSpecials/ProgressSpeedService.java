@@ -15,7 +15,7 @@ public class ProgressSpeedService {
 
     @FunctionalInterface
     public interface TimeModifier {
-        void apply(UUID playerId, int skipSeconds, double speedMultiplier, String reason);
+        void apply(UUID playerId, int skipSeconds, double percentSpeedIncrease, String reason);
     }
 
     private final TimeModifier timeModifier;
@@ -53,11 +53,13 @@ public class ProgressSpeedService {
         double multiplierDelta = multiplier / previousMultiplier;
         int skipDelta = skipSeconds - previousSkip;
 
+        double percentDelta = (multiplierDelta - 1.0) * 100.0;
+
         if (Double.compare(multiplierDelta, 1.0) == 0 && skipDelta == 0) {
             return;
         }
 
-        timeModifier.apply(playerId, skipDelta, multiplierDelta, reason);
+        timeModifier.apply(playerId, skipDelta, percentDelta, reason);
         lastAppliedMultiplier.put(playerId, multiplier);
         lastAppliedSkipSeconds.put(playerId, skipSeconds);
     }
@@ -66,6 +68,6 @@ public class ProgressSpeedService {
         if (skipSeconds <= 0) {
             return;
         }
-        timeModifier.apply(playerId, skipSeconds, 1.0, reason);
+        timeModifier.apply(playerId, skipSeconds, 0.0, reason);
     }
 }
