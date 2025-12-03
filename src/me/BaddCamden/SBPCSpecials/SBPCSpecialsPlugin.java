@@ -206,9 +206,10 @@ public class SBPCSpecialsPlugin extends JavaPlugin implements Listener {
             int skipSeconds = rewardSec != null ? rewardSec.getInt("speed-bonus-skip-seconds", 0) : 0;
             int sessionSkip = rewardSec != null ? rewardSec.getInt("session-time-skip-seconds", 0) : 0;
             boolean autoCompleteSection = rewardSec != null && rewardSec.getBoolean("auto-complete-section", false);
+            boolean defaultTimeSkip = rewardSec != null && rewardSec.getBoolean("default-time-skip", false);
 
             SpecialDefinition.RewardDefinition rewardDef =
-                    new SpecialDefinition.RewardDefinition(speedPercent, skipSeconds, sessionSkip, autoCompleteSection);
+                    new SpecialDefinition.RewardDefinition(speedPercent, skipSeconds, sessionSkip, autoCompleteSection, defaultTimeSkip);
 
             // --- Scope ---
             ConfigurationSection scopeSec = sec.getConfigurationSection("scope");
@@ -470,7 +471,14 @@ public class SBPCSpecialsPlugin extends JavaPlugin implements Listener {
 
         SpecialDefinition.RewardDefinition reward = def.getReward();
 
-        if (reward.getSpeedBonusPercent() != 0.0 || reward.getSpeedBonusSkipSeconds() != 0) {
+        if (reward.isDefaultTimeSkip()) {
+            SbpcAPI.applyExternalTimeSkip(
+                    uuid,
+                    0,
+                    0.0,
+                    "SBPCSpecials default time skip (" + id + ")"
+            );
+        } else if (reward.getSpeedBonusPercent() != 0.0 || reward.getSpeedBonusSkipSeconds() != 0) {
             data.addOrUpdateBonus(id, reward.getSpeedBonusPercent(), reward.getSpeedBonusSkipSeconds());
         }
 
