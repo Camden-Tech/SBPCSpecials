@@ -371,11 +371,11 @@ public class SBPCSpecialsPlugin extends JavaPlugin implements Listener {
             cfg.set("completed-specials", new ArrayList<>(data.getCompletedSpecials()));
 
             ConfigurationSection uniqueSec = cfg.createSection("unique-kills");
-            for (Map.Entry<String, Set<UUID>> entry : data.getUniqueKillsByKey().entrySet()) {
-                List<String> victims = entry.getValue().stream()
+            for (Map.Entry<String, Set<UUID>> e : data.getUniqueKillsByKey().entrySet()) {
+                List<String> victims = e.getValue().stream()
                         .map(UUID::toString)
                         .collect(Collectors.toList());
-                uniqueSec.set(entry.getKey(), victims);
+                uniqueSec.set(e.getKey(), victims);
             }
 
             try {
