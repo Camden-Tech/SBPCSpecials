@@ -191,6 +191,27 @@ specials:
       player: "&aYour Emerald Block massively speeds up this enchants section."
       broadcast: "&e{player} &7activated the &aEmerald Block &7special."
 
+  enchants_tier1_mob_kill_bonus:
+    trigger:
+      type: ENTITY_DEATH
+      killer-must-be-player: true
+    section:
+      require-type: "SPECIAL"
+      applies-to-all-sections: false
+      allowed-sections:
+        - enchants_tier1
+    reward:
+      auto-complete-section: false
+      speed-bonus-percent: 0.0
+      speed-bonus-skip-seconds: 5
+      session-time-skip-seconds: 0
+    scope:
+      once-per-player: false
+      once-per-server: false
+    messages:
+      player: "&aKilling mobs speeds up this enchants section."
+      broadcast: ""
+
   # Copper Tools + Copper Armor (copper_tools_armor)
   # "Having a Redstone Lamp ... auto completes this entire section."
   copper_tools_redstone_lamp_auto:
@@ -263,6 +284,27 @@ specials:
     messages:
       player: "&3The Shipwreck armor trim greatly boosts this enchants section."
       broadcast: "&e{player} &7activated the &3Shipwreck Trim &7special."
+
+  enchants_tier2_mob_kill_bonus:
+    trigger:
+      type: ENTITY_DEATH
+      killer-must-be-player: true
+    section:
+      require-type: "SPECIAL"
+      applies-to-all-sections: false
+      allowed-sections:
+        - enchants_tier2
+    reward:
+      auto-complete-section: false
+      speed-bonus-percent: 0.0
+      speed-bonus-skip-seconds: 5
+      session-time-skip-seconds: 0
+    scope:
+      once-per-player: false
+      once-per-server: false
+    messages:
+      player: "&aKilling mobs speeds up this enchants section."
+      broadcast: ""
 
   # TNT + Fireworks + TNT Minecart + End Crystal (tnt_fireworks)
   # "Having a Creeper Head ... auto completes this section. Additional time reduction: killing Creepers or Ghasts."
@@ -357,7 +399,8 @@ specials:
       broadcast: "&e{player} &7completed the &8Iron Tools + Armor &7special."
 
   # Blaze Powder (blaze_powder)
-  # "Killing a Blaze speeds this progress by 100%. Additional time reduction: killing Blazes or Wither Skeletons."
+  # "Killing a Blaze speeds this progress by 10000% and skips 1 hour; picking up a Wither Skeleton Skull auto completes it.
+  #  Additional time reduction: killing Blazes or Wither Skeletons."
   blaze_powder_blaze_kill_bonus:
     trigger:
       type: ENTITY_DEATH
@@ -370,14 +413,14 @@ specials:
         - blaze_powder
     reward:
       auto-complete-section: false
-      speed-bonus-percent: 0.0
-      speed-bonus-skip-seconds: 30
+      speed-bonus-percent: 10000.0
+      speed-bonus-skip-seconds: 3600
       session-time-skip-seconds: 0
     scope:
       once-per-player: false
       once-per-server: false
     messages:
-      player: "&6Killing a Blaze speeds up this section."
+      player: "&6Killing a Blaze massively speeds up this section and skips 1 hour."
       broadcast: ""
 
   blaze_powder_wither_skeleton_kill_bonus:
@@ -401,6 +444,28 @@ specials:
     messages:
       player: "&8Killing a Wither Skeleton gives extra time skip."
       broadcast: ""
+
+  blaze_powder_wither_skeleton_skull_auto:
+    trigger:
+      type: ENTITY_PICKUP
+      entity-type: PLAYER
+      item-type: WITHER_SKELETON_SKULL
+    section:
+      require-type: "SPECIAL"
+      applies-to-all-sections: false
+      allowed-sections:
+        - blaze_powder
+    reward:
+      auto-complete-section: true
+      speed-bonus-percent: 0.0
+      speed-bonus-skip-seconds: 0
+      session-time-skip-seconds: 0
+    scope:
+      once-per-player: true
+      once-per-server: false
+    messages:
+      player: "&7A Wither Skeleton Skull completes the Blaze Powder section."
+      broadcast: "&e{player} &7completed the &cBlaze Powder &7special."
 
   # Enderpearl + Wind Charge (enderpearl_wind_charge)
   # "Having a Chorus Fruit ... auto completes this section.
@@ -498,7 +563,6 @@ specials:
   heart_meds_mob_kill_bonus:
     trigger:
       type: ENTITY_DEATH
-      entity-type: ZOMBIE   # placeholder generic hostile; extend if desired
       killer-must-be-player: true
     section:
       require-type: "SPECIAL"
@@ -542,9 +606,30 @@ specials:
       player: "&fA Nether Star supercharges this enchants section."
       broadcast: "&e{player} &7activated the &fNether Star &7special."
 
+  enchants_tier3_mob_kill_bonus:
+    trigger:
+      type: ENTITY_DEATH
+      killer-must-be-player: true
+    section:
+      require-type: "SPECIAL"
+      applies-to-all-sections: false
+      allowed-sections:
+        - enchants_tier3
+    reward:
+      auto-complete-section: false
+      speed-bonus-percent: 0.0
+      speed-bonus-skip-seconds: 5
+      session-time-skip-seconds: 0
+    scope:
+      once-per-player: false
+      once-per-server: false
+    messages:
+      player: "&aKilling mobs speeds up this enchants section."
+      broadcast: ""
+
   # Shulker Shell (shulker_shell)
-  # "Killing a Shulker or an Enderman while in the End auto completes it.
-  #  Additional time reduction: killing Shulkers."
+  # "Killing a Shulker or an Enderman while in the End speeds this progress by 10000% and skips 1 hour;
+  #  picking up an Elytra auto completes it. Additional time reduction: killing Shulkers."
   shulker_shell_shulker_kill_auto:
     trigger:
       type: ENTITY_DEATH
@@ -556,16 +641,16 @@ specials:
       allowed-sections:
         - shulker_shell
     reward:
-      auto-complete-section: true
-      speed-bonus-percent: 0.0
-      speed-bonus-skip-seconds: 0
+      auto-complete-section: false
+      speed-bonus-percent: 10000.0
+      speed-bonus-skip-seconds: 3600
       session-time-skip-seconds: 0
     scope:
       once-per-player: true
       once-per-server: false
     messages:
-      player: "&dKilling a Shulker completes this section."
-      broadcast: "&e{player} &7completed the &dShulker Shell &7special."
+      player: "&dKilling a Shulker massively speeds up this section and skips 1 hour."
+      broadcast: "&e{player} &7activated the &dShulker Shell &7boost."
 
   shulker_shell_enderman_kill_auto:
     trigger:
@@ -578,15 +663,15 @@ specials:
       allowed-sections:
         - shulker_shell
     reward:
-      auto-complete-section: true
-      speed-bonus-percent: 0.0
-      speed-bonus-skip-seconds: 0
+      auto-complete-section: false
+      speed-bonus-percent: 10000.0
+      speed-bonus-skip-seconds: 3600
       session-time-skip-seconds: 0
     scope:
       once-per-player: true
       once-per-server: false
     messages:
-      player: "&5Killing an Enderman in the End completes this section."
+      player: "&5Killing an Enderman massively speeds up this section and skips 1 hour."
       broadcast: ""
 
   shulker_shell_shulker_kill_bonus:
@@ -610,6 +695,28 @@ specials:
     messages:
       player: "&aKilling Shulkers gives extra time reduction."
       broadcast: ""
+
+  shulker_shell_elytra_auto:
+    trigger:
+      type: ENTITY_PICKUP
+      entity-type: PLAYER
+      item-type: ELYTRA
+    section:
+      require-type: "SPECIAL"
+      applies-to-all-sections: false
+      allowed-sections:
+        - shulker_shell
+    reward:
+      auto-complete-section: true
+      speed-bonus-percent: 0.0
+      speed-bonus-skip-seconds: 0
+      session-time-skip-seconds: 0
+    scope:
+      once-per-player: true
+      once-per-server: false
+    messages:
+      player: "&5Picking up an Elytra completes this section."
+      broadcast: "&e{player} &7completed the &dShulker Shell &7special."
 
   # Diamond Tools + Diamond Armor (diamond_tools_armor)
   # "Having a Netherite Block ... adds 800% to the progress speed for this section."
@@ -682,6 +789,27 @@ specials:
     messages:
       player: "&eGaining Haste II supercharges this enchants section."
       broadcast: "&e{player} &7activated the &eHaste II &7special."
+
+  enchants_tier4_mob_kill_bonus:
+    trigger:
+      type: ENTITY_DEATH
+      killer-must-be-player: true
+    section:
+      require-type: "SPECIAL"
+      applies-to-all-sections: false
+      allowed-sections:
+        - enchants_tier4
+    reward:
+      auto-complete-section: false
+      speed-bonus-percent: 0.0
+      speed-bonus-skip-seconds: 5
+      session-time-skip-seconds: 0
+    scope:
+      once-per-player: false
+      once-per-server: false
+    messages:
+      player: "&aKilling mobs speeds up this enchants section."
+      broadcast: ""
 
   # Netherite Tools + Netherite Armor (netherite_tools_armor)
   # "Having a Dragon Egg ... adds 800% to the progress speed for this section."
