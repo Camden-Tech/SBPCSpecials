@@ -141,20 +141,27 @@ public class SpecialDefinition {
         private final double speedBonusPercent;
         private final int speedBonusSkipSeconds;
         private final int sessionTimeSkipSeconds;
-        private final boolean autoCompleteSection; 
+        private final boolean autoCompleteSection;
+        private final boolean defaultTimeSkip;
 
 
         public RewardDefinition(double speedBonusPercent,
                 int speedBonusSkipSeconds,
                 int sessionTimeSkipSeconds,
-                boolean autoCompleteSection) {
-				this.speedBonusPercent = speedBonusPercent;
-				this.speedBonusSkipSeconds = speedBonusSkipSeconds;
-				this.sessionTimeSkipSeconds = sessionTimeSkipSeconds;
-				this.autoCompleteSection = autoCompleteSection;
+                boolean autoCompleteSection,
+                boolean defaultTimeSkip) {
+                                this.speedBonusPercent = speedBonusPercent;
+                                this.speedBonusSkipSeconds = speedBonusSkipSeconds;
+                                this.sessionTimeSkipSeconds = sessionTimeSkipSeconds;
+                                this.autoCompleteSection = autoCompleteSection;
+                                this.defaultTimeSkip = defaultTimeSkip;
         }
         public boolean isAutoCompleteSection() {
             return autoCompleteSection;
+        }
+
+        public boolean isDefaultTimeSkip() {
+            return defaultTimeSkip;
         }
 
 
