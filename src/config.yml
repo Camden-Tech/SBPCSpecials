@@ -48,6 +48,51 @@ specials:
       player: "&aHaving Wheat completes the Wheat Seeds section."
       broadcast: "&e{player} &7completed the &aWheat Seeds &7special."
 
+  # Meats (meats)
+  # "Killing an Enderman auto completes this section; killing mobs speeds it up."
+  meats_enderman_kill_auto:
+    trigger:
+      type: ENTITY_DEATH
+      entity-type: ENDERMAN
+      killer-must-be-player: true
+    section:
+      require-type: "SPECIAL"
+      applies-to-all-sections: false
+      allowed-sections:
+        - meats
+    reward:
+      auto-complete-section: true
+      speed-bonus-percent: 0.0
+      speed-bonus-skip-seconds: 0
+      session-time-skip-seconds: 0
+    scope:
+      once-per-player: true
+      once-per-server: false
+    messages:
+      player: "&cSlaying an Enderman unlocks the entire Meats section."
+      broadcast: "&e{player} &7completed the &cMeats &7special."
+
+  meats_mob_kill_bonus:
+    trigger:
+      type: ENTITY_DEATH
+      killer-must-be-player: true
+    section:
+      require-type: "SPECIAL"
+      applies-to-all-sections: false
+      allowed-sections:
+        - meats
+    reward:
+      auto-complete-section: false
+      speed-bonus-percent: 0.0
+      speed-bonus-skip-seconds: 10
+      session-time-skip-seconds: 0
+    scope:
+      once-per-player: false
+      once-per-server: false
+    messages:
+      player: "&6Killing mobs speeds up the Meats section."
+      broadcast: ""
+
   # Stone Tools + Chainmail Armor (stone_chainmail)
   # "Having a Diamond (even if not obtained naturally) auto completes this entire section."
   stone_chainmail_diamond_auto:
