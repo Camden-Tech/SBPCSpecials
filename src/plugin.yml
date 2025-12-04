@@ -12,7 +12,7 @@ commands:
 permissions:
   sbpcspecials.command.activate:
     description: "Allow players to activate eligible specials via /specials activate."
-    default: false
+    default: op
   sbpcspecials.command.remove:
     description: "Allow players to remove applied specials via /specials remove."
     default: false
