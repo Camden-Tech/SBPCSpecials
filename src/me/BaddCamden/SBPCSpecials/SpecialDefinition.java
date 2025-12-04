@@ -63,17 +63,20 @@ public class SpecialDefinition {
         private final boolean killerMustBePlayer;
         private final Material itemType;
         private final String entryId;
+        private final boolean commandActivatable;
 
         public TriggerDefinition(TriggerType type,
                                  EntityType entityType,
                                  boolean killerMustBePlayer,
                                  Material itemType,
-                                 String entryId) {
+                                 String entryId,
+                                 boolean commandActivatable) {
             this.type = type;
             this.entityType = entityType;
             this.killerMustBePlayer = killerMustBePlayer;
             this.itemType = itemType;
             this.entryId = entryId;
+            this.commandActivatable = commandActivatable;
         }
 
         public TriggerType getType() {
@@ -94,6 +97,10 @@ public class SpecialDefinition {
 
         public String getEntryId() {
             return entryId;
+        }
+
+        public boolean isCommandActivatable() {
+            return commandActivatable;
         }
     }
 

@@ -114,4 +114,13 @@ public class PlayerSpecialData {
                 .sum();
     }
 
+    public boolean removeSpecial(String specialId, boolean clearCompletion) {
+        boolean changed = appliedSpecials.remove(specialId);
+        changed |= bonusesBySpecialId.remove(specialId) != null;
+        if (clearCompletion) {
+            changed |= completedSpecials.remove(specialId);
+        }
+        return changed;
+    }
+
 }

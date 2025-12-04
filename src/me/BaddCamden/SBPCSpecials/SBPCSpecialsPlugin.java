@@ -8,6 +8,11 @@ import java.util.stream.Collectors;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.PluginCommand;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
@@ -35,7 +40,7 @@ import me.BaddCamden.SBPC.progress.SectionDefinition;
  * - Per-player speed bonuses are stored in Players/<uuid>.yml.
  * - Section checks are done via section type (SectionDefinition.getType()) and index.
  */
-public class SBPCSpecialsPlugin extends JavaPlugin implements Listener {
+public class SBPCSpecialsPlugin extends JavaPlugin implements Listener, CommandExecutor, TabCompleter {
 
     private final ProgressSpeedService progressSpeedService =
             new ProgressSpeedService(SbpcAPI::applyExternalTimeSkip);
@@ -65,6 +70,9 @@ public class SBPCSpecialsPlugin extends JavaPlugin implements Listener {
     private static final String SERIAL_KILLER_SECTION_ID = "serial_killer";
     private static final int SERIAL_KILLER_KILL_SKIP_SECONDS = 1800;
 
+    private static final String PERMISSION_ACTIVATE = "sbpcspecials.command.activate";
+    private static final String PERMISSION_REMOVE = "sbpcspecials.command.remove";
+
     private File playersFolder;
     private File specialsDataFile;
 
@@ -86,6 +94,14 @@ public class SBPCSpecialsPlugin extends JavaPlugin implements Listener {
 
         // Initialize hook API
         SpecialsAPI.init(this);
+
+        PluginCommand command = getCommand("specials");
+        if (command != null) {
+            command.setExecutor(this);
+            command.setTabCompleter(this);
+        } else {
+            getLogger().warning("Could not register /specials command (not defined in plugin.yml)");
+        }
 
 
         getLogger().info("SBPCSpecials enabled. Specials are now config-driven.");
@@ -171,12 +187,15 @@ public class SBPCSpecialsPlugin extends JavaPlugin implements Listener {
                 entryId = trigSec.getString("entry-id", null);
             }
 
+            boolean commandActivatable = trigSec.getBoolean("command-activatable", false);
+
             SpecialDefinition.TriggerDefinition triggerDef = new SpecialDefinition.TriggerDefinition(
                     triggerType,
                     entityType,
                     killerMustBePlayer,
                     itemType,
-                    entryId
+                    entryId,
+                    commandActivatable
             );
 
             // --- Section condition ---
@@ -451,6 +470,174 @@ public class SBPCSpecialsPlugin extends JavaPlugin implements Listener {
             // Apply reward now (no trigger context entity available here)
             applySpecialReward(def, player, null);
         }
+    }
+
+    private SpecialDefinition getSpecialDefinition(String specialId) {
+        SpecialDefinition def = specialsById.get(specialId);
+        if (def != null) {
+            return def;
+        }
+
+        for (SpecialDefinition candidate : specialsById.values()) {
+            if (candidate.getId().equalsIgnoreCase(specialId)) {
+                return candidate;
+            }
+        }
+
+        return null;
+    }
+
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (!"specials".equalsIgnoreCase(command.getName())) {
+            return false;
+        }
+
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage(ChatColor.RED + "Only players can use this command.");
+            return true;
+        }
+
+        if (args.length < 2) {
+            sendCommandUsage(player, label);
+            return true;
+        }
+
+        String sub = args[0].toLowerCase(Locale.ROOT);
+        String specialId = args[1];
+        SpecialDefinition def = getSpecialDefinition(specialId);
+        if (def == null) {
+            player.sendMessage(ChatColor.RED + "Unknown special id: " + specialId);
+            return true;
+        }
+
+        switch (sub) {
+            case "activate" -> handleActivateCommand(player, def);
+            case "remove" -> handleRemoveCommand(player, def);
+            default -> sendCommandUsage(player, label);
+        }
+
+        return true;
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        if (!"specials".equalsIgnoreCase(command.getName())) {
+            return Collections.emptyList();
+        }
+
+        if (args.length == 1) {
+            return Arrays.asList("activate", "remove");
+        }
+
+        if (!(sender instanceof Player player)) {
+            return Collections.emptyList();
+        }
+
+        String sub = args[0].toLowerCase(Locale.ROOT);
+        String current = args[1].toLowerCase(Locale.ROOT);
+
+        if (args.length == 2) {
+            if ("activate".equals(sub) && player.hasPermission(PERMISSION_ACTIVATE)) {
+                return specialsById.values().stream()
+                        .filter(def -> def.getTrigger() != null && def.getTrigger().isCommandActivatable())
+                        .map(SpecialDefinition::getId)
+                        .filter(id -> id.toLowerCase(Locale.ROOT).startsWith(current))
+                        .sorted()
+                        .toList();
+            }
+
+            if ("remove".equals(sub) && player.hasPermission(PERMISSION_REMOVE)) {
+                PlayerSpecialData data = getOrCreatePlayerData(player.getUniqueId());
+                return data.getAppliedSpecials().stream()
+                        .filter(id -> id.toLowerCase(Locale.ROOT).startsWith(current))
+                        .sorted()
+                        .toList();
+            }
+        }
+
+        return Collections.emptyList();
+    }
+
+    private void handleActivateCommand(Player player, SpecialDefinition def) {
+        if (!player.hasPermission(PERMISSION_ACTIVATE)) {
+            player.sendMessage(ChatColor.RED + "You do not have permission to activate specials.");
+            return;
+        }
+
+        if (def.getTrigger() == null || !def.getTrigger().isCommandActivatable()) {
+            player.sendMessage(ChatColor.RED + "This special cannot be activated via command.");
+            return;
+        }
+
+        applyPendingSpecialsForCurrentSection(player);
+
+        if (!sectionConditionMatches(def, player)) {
+            player.sendMessage(ChatColor.RED + "You must be in the correct section or entry to activate this special.");
+            return;
+        }
+
+        String id = def.getId();
+        UUID uuid = player.getUniqueId();
+        PlayerSpecialData data = getOrCreatePlayerData(uuid);
+
+        if (data.isApplied(id)) {
+            player.sendMessage(ChatColor.YELLOW + "That special is already active.");
+            return;
+        }
+
+        SpecialDefinition.ScopeDefinition scope = def.getScope();
+        if (scope != null) {
+            if (scope.isOncePerServer() && completedSpecialsServerWide.contains(id)) {
+                player.sendMessage(ChatColor.RED + "This special has already been completed server-wide.");
+                return;
+            }
+            if (scope.isOncePerPlayer() && data.isCompleted(id)) {
+                player.sendMessage(ChatColor.RED + "You have already completed this special.");
+                return;
+            }
+        }
+
+        if (scope != null && scope.isOncePerServer()) {
+            completedSpecialsServerWide.add(id);
+        }
+
+        applySpecialReward(def, player, null);
+        player.sendMessage(ChatColor.GREEN + "Special " + id + " activated.");
+    }
+
+    private void handleRemoveCommand(Player player, SpecialDefinition def) {
+        if (!player.hasPermission(PERMISSION_REMOVE)) {
+            player.sendMessage(ChatColor.RED + "You do not have permission to remove specials.");
+            return;
+        }
+
+        String id = def.getId();
+        PlayerSpecialData data = getOrCreatePlayerData(player.getUniqueId());
+
+        if (!data.isApplied(id)) {
+            player.sendMessage(ChatColor.RED + "That special is not currently active for you.");
+            return;
+        }
+
+        boolean clearCompletion = def.getScope() != null && !def.getScope().isOncePerPlayer();
+        boolean removed = data.removeSpecial(id, clearCompletion);
+        if (!removed) {
+            player.sendMessage(ChatColor.RED + "Could not remove that special.");
+            return;
+        }
+
+        progressSpeedService.applySpeedBonuses(
+                player.getUniqueId(),
+                data,
+                "SBPCSpecials command removal (" + id + ")"
+        );
+
+        player.sendMessage(ChatColor.YELLOW + "Special " + id + " removed.");
+    }
+
+    private void sendCommandUsage(Player player, String label) {
+        player.sendMessage(ChatColor.YELLOW + "Usage: /" + label + " <activate|remove> <special-id>");
     }
     /**
      * Apply the reward for a special to the given player, mark it applied,
