@@ -17,8 +17,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
+import org.bukkit.event.entity.EntityPotionEffectEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import me.BaddCamden.SBPC.api.SbpcAPI;
 import me.BaddCamden.SBPCSpecials.ProgressSpeedService;
@@ -49,6 +52,7 @@ public class SBPCSpecialsPlugin extends JavaPlugin implements Listener {
     private final List<SpecialDefinition> deathSpecialsAny = new ArrayList<>();
     private final Map<Material, List<SpecialDefinition>> pickupSpecials = new HashMap<>();
     private final Map<String, List<SpecialDefinition>> unlockEntrySpecials = new HashMap<>();
+    private final Map<PotionEffectType, List<SpecialDefinition>> potionEffectSpecials = new HashMap<>();
 
     // ------------------------------------------------------------------------
     // Per-player & server state
@@ -108,6 +112,7 @@ public class SBPCSpecialsPlugin extends JavaPlugin implements Listener {
         deathSpecialsAny.clear();
         pickupSpecials.clear();
         unlockEntrySpecials.clear();
+        potionEffectSpecials.clear();
 
         ConfigurationSection root = getConfig().getConfigurationSection("specials");
         if (root == null) {
@@ -227,15 +232,34 @@ public class SBPCSpecialsPlugin extends JavaPlugin implements Listener {
             SpecialDefinition.MessagesDefinition msgDef =
                     new SpecialDefinition.MessagesDefinition(playerMsg, broadcastMsg);
 
+            // --- Potion requirement ---
+            ConfigurationSection potionSec = sec.getConfigurationSection("potion-requirement");
+            SpecialDefinition.PotionRequirement potionRequirement = null;
+            if (potionSec != null) {
+                String effectName = potionSec.getString("effect", "");
+                PotionEffectType effectType = PotionEffectType.getByName(effectName);
+                if (effectType == null) {
+                    getLogger().warning("Special " + id + " has invalid potion effect: " + effectName);
+                } else {
+                    int minAmplifier = Math.max(0, potionSec.getInt("min-amplifier", 0));
+                    potionRequirement = new SpecialDefinition.PotionRequirement(effectType, minAmplifier);
+                }
+            }
+
             SpecialDefinition def = new SpecialDefinition(
                     id,
                     triggerDef,
                     sectionCondition,
                     rewardDef,
                     scopeDef,
-                    msgDef
+                    msgDef,
+                    potionRequirement
             );
             specialsById.put(id, def);
+
+            if (potionRequirement != null && potionRequirement.getEffectType() != null) {
+                potionEffectSpecials.computeIfAbsent(potionRequirement.getEffectType(), k -> new ArrayList<>()).add(def);
+            }
 
             // Index by trigger type
             switch (triggerType) {
@@ -344,6 +368,7 @@ public class SBPCSpecialsPlugin extends JavaPlugin implements Listener {
 
         // Specials completed in past sections may become applicable now.
         applyPendingSpecialsForCurrentSection(player);
+        applyPendingPotionRequirementSpecials(player, null);
     }
 
     private void savePlayerData() {
@@ -448,7 +473,54 @@ public class SBPCSpecialsPlugin extends JavaPlugin implements Listener {
                 continue;
             }
 
+            if (!requirementsMet(def, player)) {
+                continue;
+            }
+
             // Apply reward now (no trigger context entity available here)
+            applySpecialReward(def, player, null);
+        }
+    }
+
+    private void applyPendingPotionRequirementSpecials(Player player, PotionEffectType changedEffect) {
+        if (player == null) {
+            return;
+        }
+
+        UUID uuid = player.getUniqueId();
+        PlayerSpecialData data = playerData.get(uuid);
+        if (data == null) {
+            return;
+        }
+
+        for (String id : data.getCompletedSpecials()) {
+            if (data.isApplied(id)) {
+                continue;
+            }
+
+            SpecialDefinition def = specialsById.get(id);
+            if (def == null) {
+                continue;
+            }
+
+            SpecialDefinition.PotionRequirement potionRequirement = def.getPotionRequirement();
+            if (potionRequirement == null) {
+                continue;
+            }
+
+            PotionEffectType requiredEffect = potionRequirement.getEffectType();
+            if (changedEffect != null && requiredEffect != null && !requiredEffect.equals(changedEffect)) {
+                continue;
+            }
+
+            if (!sectionConditionMatches(def, player)) {
+                continue;
+            }
+
+            if (!requirementsMet(def, player)) {
+                continue;
+            }
+
             applySpecialReward(def, player, null);
         }
     }
@@ -558,6 +630,32 @@ public class SBPCSpecialsPlugin extends JavaPlugin implements Listener {
         getLogger().info("Special " + def.getId() + " not applied for " + playerName + ": " + result.getReason());
     }
 
+    private boolean requirementsMet(SpecialDefinition def, Player player) {
+        SpecialDefinition.PotionRequirement potionReq = def.getPotionRequirement();
+        if (potionReq == null) {
+            return true;
+        }
+
+        PotionEffectType type = potionReq.getEffectType();
+        if (type == null) {
+            return false;
+        }
+
+        PotionEffect effect = player.getPotionEffect(type);
+        return effect != null && effect.getAmplifier() >= potionReq.getMinAmplifier();
+    }
+
+    private void markSpecialCompletion(SpecialDefinition def,
+                                       PlayerSpecialData data,
+                                       SpecialDefinition.ScopeDefinition scope) {
+        if (!data.isCompleted(def.getId())) {
+            data.markCompleted(def.getId());
+        }
+        if (scope.isOncePerServer()) {
+            completedSpecialsServerWide.add(def.getId());
+        }
+    }
+
     // ------------------------------------------------------------------------
     // Special triggering pipeline
     // ------------------------------------------------------------------------
@@ -586,17 +684,17 @@ public class SBPCSpecialsPlugin extends JavaPlugin implements Listener {
         // If section does NOT match yet:
         // - record completion so we can apply later when the player reaches that section
         if (!sectionMatches) {
-            if (!data.isCompleted(id)) {
-                data.markCompleted(id);
-                if (scope.isOncePerServer()) {
-                    completedSpecialsServerWide.add(id);
-                }
-            }
+            markSpecialCompletion(def, data, scope);
             return;
         }
 
-        // At this point, section matches. If once-per-player and already completed, avoid re-applying.
-        if (scope.isOncePerPlayer() && data.isCompleted(id)) {
+        // At this point, section matches. If once-per-player and already applied, avoid re-applying.
+        if (scope.isOncePerPlayer() && data.isCompleted(id) && data.isApplied(id)) {
+            return;
+        }
+
+        if (!requirementsMet(def, player)) {
+            markSpecialCompletion(def, data, scope);
             return;
         }
 
@@ -682,11 +780,27 @@ public class SBPCSpecialsPlugin extends JavaPlugin implements Listener {
     // ------------------------------------------------------------------------
 
     @EventHandler(ignoreCancelled = true)
+    public void onEntityPotionEffect(EntityPotionEffectEvent event) {
+        if (!(event.getEntity() instanceof Player player)) {
+            return;
+        }
+
+        PotionEffectType changedType = event.getModifiedType();
+        if (changedType != null && !potionEffectSpecials.containsKey(changedType)) {
+            return;
+        }
+
+        applyPendingPotionRequirementSpecials(player, changedType);
+    }
+
+    @EventHandler(ignoreCancelled = true)
     public void onEntityDeath(EntityDeathEvent event) {
         Player killer = event.getEntity().getKiller();
         if (killer == null) {
             return;
         }
+
+        applyPendingPotionRequirementSpecials(killer, null);
 
         if (event.getEntity() instanceof Player victimPlayer) {
             handlePvpSectionSpecials(killer, victimPlayer);
@@ -730,6 +844,8 @@ public class SBPCSpecialsPlugin extends JavaPlugin implements Listener {
         Player player = (Player) event.getEntity();
         Material type = event.getItem().getItemStack().getType();
 
+        applyPendingPotionRequirementSpecials(player, null);
+
         List<SpecialDefinition> defs = pickupSpecials.get(type);
         if (defs == null || defs.isEmpty()) {
             return;
@@ -755,6 +871,7 @@ public class SBPCSpecialsPlugin extends JavaPlugin implements Listener {
 
         // Apply any pending specials first
         applyPendingSpecialsForCurrentSection(player);
+        applyPendingPotionRequirementSpecials(player, null);
 
         for (SpecialDefinition def : defs) {
             triggerSpecial(def, player, null);
