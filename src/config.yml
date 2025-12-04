@@ -10,6 +10,7 @@ specials:
       type: ENTITY_PICKUP
       entity-type: PLAYER
       item-type: PALE_OAK_LOG
+      command-activatable: true
     section:
       require-type: "SPECIAL"
       applies-to-all-sections: false
@@ -35,6 +36,7 @@ specials:
       type: ENTITY_PICKUP
       entity-type: PLAYER
       item-type: WHEAT
+      command-activatable: true
     section:
       require-type: "SPECIAL"
       applies-to-all-sections: false
@@ -60,6 +62,7 @@ specials:
       type: ENTITY_DEATH
       entity-type: ENDERMAN
       killer-must-be-player: true
+      command-activatable: true
     section:
       require-type: "SPECIAL"
       applies-to-all-sections: false
@@ -82,6 +85,7 @@ specials:
     trigger:
       type: ENTITY_DEATH
       killer-must-be-player: true
+      command-activatable: true
     section:
       require-type: "SPECIAL"
       applies-to-all-sections: false
@@ -90,9 +94,9 @@ specials:
     reward:
       auto-complete-section: false
       speed-bonus-percent: 0.0
-      speed-bonus-skip-seconds: 10
+      speed-bonus-skip-seconds: 0
       session-time-skip-seconds: 0
-      default-time-skip: false
+      default-time-skip: true
     scope:
       once-per-player: false
       once-per-server: false
@@ -107,6 +111,7 @@ specials:
       type: ENTITY_PICKUP
       entity-type: PLAYER
       item-type: DIAMOND
+      command-activatable: true
     section:
       require-type: "SPECIAL"
       applies-to-all-sections: false
@@ -132,6 +137,7 @@ specials:
       type: ENTITY_PICKUP
       entity-type: PLAYER
       item-type: OBSIDIAN
+      command-activatable: true
     section:
       require-type: "SPECIAL"
       applies-to-all-sections: false
@@ -158,6 +164,7 @@ specials:
       type: ENTITY_PICKUP
       entity-type: PLAYER
       item-type: RED_BED
+      command-activatable: true
     section:
       require-type: "SPECIAL"
       applies-to-all-sections: false
@@ -207,6 +214,7 @@ specials:
     trigger:
       type: ENTITY_DEATH
       killer-must-be-player: true
+      command-activatable: true
     section:
       require-type: "SPECIAL"
       applies-to-all-sections: false
@@ -215,9 +223,9 @@ specials:
     reward:
       auto-complete-section: false
       speed-bonus-percent: 0.0
-      speed-bonus-skip-seconds: 5
+      speed-bonus-skip-seconds: 0
       session-time-skip-seconds: 0
-      default-time-skip: false
+      default-time-skip: true
     scope:
       once-per-player: false
       once-per-server: false
@@ -232,6 +240,7 @@ specials:
       type: ENTITY_PICKUP
       entity-type: PLAYER
       item-type: REDSTONE_LAMP
+      command-activatable: true
     section:
       require-type: "SPECIAL"
       applies-to-all-sections: false
@@ -257,6 +266,7 @@ specials:
       type: ENTITY_PICKUP
       entity-type: PLAYER
       item-type: SCAFFOLDING
+      command-activatable: true
     section:
       require-type: "SPECIAL"
       applies-to-all-sections: false
@@ -283,6 +293,7 @@ specials:
       type: ENTITY_PICKUP
       entity-type: PLAYER
       item-type: WAYFINDER_ARMOR_TRIM_SMITHING_TEMPLATE   # Shipwreck trim template
+      command-activatable: true
     section:
       require-type: "SPECIAL"
       applies-to-all-sections: false
@@ -305,6 +316,7 @@ specials:
     trigger:
       type: ENTITY_DEATH
       killer-must-be-player: true
+      command-activatable: true
     section:
       require-type: "SPECIAL"
       applies-to-all-sections: false
@@ -313,9 +325,9 @@ specials:
     reward:
       auto-complete-section: false
       speed-bonus-percent: 0.0
-      speed-bonus-skip-seconds: 5
+      speed-bonus-skip-seconds: 0
       session-time-skip-seconds: 0
-      default-time-skip: false
+      default-time-skip: true
     scope:
       once-per-player: false
       once-per-server: false
@@ -330,6 +342,7 @@ specials:
       type: ENTITY_PICKUP
       entity-type: PLAYER
       item-type: CREEPER_HEAD
+      command-activatable: true
     section:
       require-type: "SPECIAL"
       applies-to-all-sections: false
@@ -353,6 +366,7 @@ specials:
       type: ENTITY_DEATH
       entity-type: CREEPER
       killer-must-be-player: true
+      command-activatable: true
     section:
       require-type: "SPECIAL"
       applies-to-all-sections: false
@@ -360,8 +374,8 @@ specials:
         - tnt_fireworks
     reward:
       auto-complete-section: false
-      speed-bonus-percent: 0.0
-      speed-bonus-skip-seconds: 10
+      speed-bonus-percent: 10.0
+      speed-bonus-skip-seconds: 250
       session-time-skip-seconds: 0
       default-time-skip: false
     scope:
@@ -376,6 +390,7 @@ specials:
       type: ENTITY_DEATH
       entity-type: GHAST
       killer-must-be-player: true
+      command-activatable: true
     section:
       require-type: "SPECIAL"
       applies-to-all-sections: false
@@ -383,8 +398,8 @@ specials:
         - tnt_fireworks
     reward:
       auto-complete-section: false
-      speed-bonus-percent: 0.0
-      speed-bonus-skip-seconds: 15
+      speed-bonus-percent: 10.0
+      speed-bonus-skip-seconds: 250
       session-time-skip-seconds: 0
       default-time-skip: false
     scope:
@@ -401,6 +416,7 @@ specials:
       type: ENTITY_PICKUP
       entity-type: PLAYER
       item-type: NETHERITE_SCRAP
+      command-activatable: true
     section:
       require-type: "SPECIAL"
       applies-to-all-sections: false
@@ -427,6 +443,7 @@ specials:
       type: ENTITY_DEATH
       entity-type: BLAZE
       killer-must-be-player: true
+      command-activatable: true
     section:
       require-type: "SPECIAL"
       applies-to-all-sections: false
@@ -450,6 +467,7 @@ specials:
       type: ENTITY_DEATH
       entity-type: WITHER_SKELETON
       killer-must-be-player: true
+      command-activatable: true
     section:
       require-type: "SPECIAL"
       applies-to-all-sections: false
@@ -457,8 +475,8 @@ specials:
         - blaze_powder
     reward:
       auto-complete-section: false
-      speed-bonus-percent: 0.0
-      speed-bonus-skip-seconds: 20
+      speed-bonus-percent: 10000.0
+      speed-bonus-skip-seconds: 3600
       session-time-skip-seconds: 0
       default-time-skip: false
     scope:
@@ -473,6 +491,7 @@ specials:
       type: ENTITY_PICKUP
       entity-type: PLAYER
       item-type: WITHER_SKELETON_SKULL
+      command-activatable: true
     section:
       require-type: "SPECIAL"
       applies-to-all-sections: false
@@ -499,6 +518,7 @@ specials:
       type: ENTITY_PICKUP
       entity-type: PLAYER
       item-type: CHORUS_FRUIT
+      command-activatable: true
     section:
       require-type: "SPECIAL"
       applies-to-all-sections: false
@@ -522,6 +542,7 @@ specials:
       type: ENTITY_DEATH
       entity-type: ENDERMAN
       killer-must-be-player: true
+      command-activatable: true
     section:
       require-type: "SPECIAL"
       applies-to-all-sections: false
@@ -532,7 +553,7 @@ specials:
       speed-bonus-percent: 0.0
       speed-bonus-skip-seconds: 15
       session-time-skip-seconds: 0
-      default-time-skip: false
+      default-time-skip: true
     scope:
       once-per-player: false
       once-per-server: false
@@ -545,6 +566,7 @@ specials:
       type: ENTITY_DEATH
       entity-type: BREEZE
       killer-must-be-player: true
+      command-activatable: true
     section:
       require-type: "SPECIAL"
       applies-to-all-sections: false
@@ -553,9 +575,9 @@ specials:
     reward:
       auto-complete-section: false
       speed-bonus-percent: 0.0
-      speed-bonus-skip-seconds: 15
+      speed-bonus-skip-seconds: 0
       session-time-skip-seconds: 0
-      default-time-skip: false
+      default-time-skip: true
     scope:
       once-per-player: false
       once-per-server: false
@@ -570,6 +592,7 @@ specials:
       type: ENTITY_DEATH
       entity-type: PLAYER
       killer-must-be-player: true
+      command-activatable: true
     section:
       require-type: "SPECIAL"
       applies-to-all-sections: false
@@ -592,6 +615,7 @@ specials:
     trigger:
       type: ENTITY_DEATH
       killer-must-be-player: true
+      command-activatable: true
     section:
       require-type: "SPECIAL"
       applies-to-all-sections: false
@@ -602,7 +626,7 @@ specials:
       speed-bonus-percent: 0.0
       speed-bonus-skip-seconds: 5
       session-time-skip-seconds: 0
-      default-time-skip: false
+      default-time-skip: true
     scope:
       once-per-player: false
       once-per-server: false
@@ -618,6 +642,7 @@ specials:
       type: ENTITY_PICKUP
       entity-type: PLAYER
       item-type: NETHER_STAR
+      command-activatable: true
     section:
       require-type: "SPECIAL"
       applies-to-all-sections: false
@@ -640,6 +665,7 @@ specials:
     trigger:
       type: ENTITY_DEATH
       killer-must-be-player: true
+      command-activatable: true
     section:
       require-type: "SPECIAL"
       applies-to-all-sections: false
@@ -650,7 +676,7 @@ specials:
       speed-bonus-percent: 0.0
       speed-bonus-skip-seconds: 5
       session-time-skip-seconds: 0
-      default-time-skip: false
+      default-time-skip: true
     scope:
       once-per-player: false
       once-per-server: false
@@ -666,6 +692,7 @@ specials:
       type: ENTITY_DEATH
       entity-type: SHULKER
       killer-must-be-player: true
+      command-activatable: true
     section:
       require-type: "SPECIAL"
       applies-to-all-sections: false
@@ -689,6 +716,7 @@ specials:
       type: ENTITY_DEATH
       entity-type: ENDERMAN
       killer-must-be-player: true
+      command-activatable: true
     section:
       require-type: "SPECIAL"
       applies-to-all-sections: false
@@ -712,6 +740,7 @@ specials:
       type: ENTITY_DEATH
       entity-type: SHULKER
       killer-must-be-player: true
+      command-activatable: true
     section:
       require-type: "SPECIAL"
       applies-to-all-sections: false
@@ -720,9 +749,9 @@ specials:
     reward:
       auto-complete-section: false
       speed-bonus-percent: 0.0
-      speed-bonus-skip-seconds: 20
+      speed-bonus-skip-seconds: 0
       session-time-skip-seconds: 0
-      default-time-skip: false
+      default-time-skip: true
     scope:
       once-per-player: false
       once-per-server: false
@@ -735,6 +764,7 @@ specials:
       type: ENTITY_PICKUP
       entity-type: PLAYER
       item-type: ELYTRA
+      command-activatable: true
     section:
       require-type: "SPECIAL"
       applies-to-all-sections: false
@@ -760,6 +790,7 @@ specials:
       type: ENTITY_PICKUP
       entity-type: PLAYER
       item-type: NETHERITE_BLOCK
+      command-activatable: true
     section:
       require-type: "SPECIAL"
       applies-to-all-sections: false
@@ -785,6 +816,7 @@ specials:
       type: ENTITY_PICKUP
       entity-type: PLAYER
       item-type: MACE
+      command-activatable: true
     section:
       require-type: "SPECIAL"
       applies-to-all-sections: false
@@ -813,6 +845,7 @@ specials:
     potion-requirement:
       effect: HASTE
       min-amplifier: 1                # Haste II = amplifier 1, Haste III = amplifier 2, etc.
+      command-activatable: true
     section:
       require-type: "SPECIAL"
       applies-to-all-sections: false
@@ -835,6 +868,7 @@ specials:
     trigger:
       type: ENTITY_DEATH
       killer-must-be-player: true
+      command-activatable: true
     section:
       require-type: "SPECIAL"
       applies-to-all-sections: false
@@ -843,9 +877,9 @@ specials:
     reward:
       auto-complete-section: false
       speed-bonus-percent: 0.0
-      speed-bonus-skip-seconds: 5
+      speed-bonus-skip-seconds: 0
       session-time-skip-seconds: 0
-      default-time-skip: false
+      default-time-skip: true
     scope:
       once-per-player: false
       once-per-server: false
@@ -860,6 +894,7 @@ specials:
       type: ENTITY_PICKUP
       entity-type: PLAYER
       item-type: DRAGON_EGG
+      command-activatable: true
     section:
       require-type: "SPECIAL"
       applies-to-all-sections: false
