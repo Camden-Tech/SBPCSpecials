@@ -2,6 +2,7 @@ package me.BaddCamden.SBPCSpecials;
 
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
+import org.bukkit.potion.PotionEffectType;
 
 /**
  * Immutable description of a single special, as loaded from config.
@@ -14,19 +15,22 @@ public class SpecialDefinition {
     private final RewardDefinition reward;
     private final ScopeDefinition scope;
     private final MessagesDefinition messages;
+    private final PotionRequirement potionRequirement;
 
     public SpecialDefinition(String id,
                              TriggerDefinition trigger,
                              SectionCondition sectionCondition,
                              RewardDefinition reward,
                              ScopeDefinition scope,
-                             MessagesDefinition messages) {
+                             MessagesDefinition messages,
+                             PotionRequirement potionRequirement) {
         this.id = id;
         this.trigger = trigger;
         this.sectionCondition = sectionCondition;
         this.reward = reward;
         this.scope = scope;
         this.messages = messages;
+        this.potionRequirement = potionRequirement;
     }
 
     public String getId() {
@@ -51,6 +55,10 @@ public class SpecialDefinition {
 
     public MessagesDefinition getMessages() {
         return messages;
+    }
+
+    public PotionRequirement getPotionRequirement() {
+        return potionRequirement;
     }
 
     // ------------------------------------------------------------------------
@@ -218,6 +226,24 @@ public class SpecialDefinition {
 
         public String getBroadcastMessage() {
             return broadcastMessage;
+        }
+    }
+
+    public static class PotionRequirement {
+        private final PotionEffectType effectType;
+        private final int minAmplifier;
+
+        public PotionRequirement(PotionEffectType effectType, int minAmplifier) {
+            this.effectType = effectType;
+            this.minAmplifier = minAmplifier;
+        }
+
+        public PotionEffectType getEffectType() {
+            return effectType;
+        }
+
+        public int getMinAmplifier() {
+            return minAmplifier;
         }
     }
 }

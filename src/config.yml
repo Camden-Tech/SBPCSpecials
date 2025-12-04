@@ -810,6 +810,9 @@ specials:
     trigger:
       type: UNLOCK_ENTRY
       entry-id: "haste2_special"     # define this as a hidden entry in SBPC
+    potion-requirement:
+      effect: HASTE
+      min-amplifier: 1                # Haste II = amplifier 1, Haste III = amplifier 2, etc.
     section:
       require-type: "SPECIAL"
       applies-to-all-sections: false
