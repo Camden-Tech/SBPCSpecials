@@ -569,7 +569,6 @@ public class SBPCSpecialsPlugin extends JavaPlugin implements Listener, CommandE
         if (args.length == 2) {
             if ("activate".equals(sub) && player.hasPermission(PERMISSION_ACTIVATE)) {
                 return specialsById.values().stream()
-                        .filter(def -> def.getTrigger() != null && def.getTrigger().isCommandActivatable())
                         .map(SpecialDefinition::getId)
                         .filter(id -> id.toLowerCase(Locale.ROOT).startsWith(current))
                         .sorted()
