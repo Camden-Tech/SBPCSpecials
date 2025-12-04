@@ -1,5 +1,8 @@
 specials:
 
+  # Set "command-activatable: true" under a trigger to allow the /specials command
+  # (with permission) to activate the special when the player is in a valid section.
+
   # Wood Tools + Leather Armor (wood_leather)
   # "Having a Pale Log (even if not obtained naturally) auto completes this entire section."
   wood_leather_pale_log_auto:
@@ -181,6 +184,7 @@ specials:
       type: ENTITY_PICKUP
       entity-type: PLAYER
       item-type: EMERALD_BLOCK
+      command-activatable: true
     section:
       require-type: "SPECIAL"
       applies-to-all-sections: false

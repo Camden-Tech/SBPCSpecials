@@ -5,3 +5,14 @@ api-version: 1.21
 depend:
   - SBPC
 description: "All SBPC specials and additional time-reducing event logic."
+commands:
+  specials:
+    description: "Activate or remove SBPC specials when eligible."
+    usage: "/<command> <activate|remove> <special-id>"
+permissions:
+  sbpcspecials.command.activate:
+    description: "Allow players to activate eligible specials via /specials activate."
+    default: false
+  sbpcspecials.command.remove:
+    description: "Allow players to remove applied specials via /specials remove."
+    default: false
