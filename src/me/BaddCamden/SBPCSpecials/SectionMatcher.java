@@ -11,6 +11,13 @@ public final class SectionMatcher {
     private SectionMatcher() {
     }
 
+    /**
+     * Evaluate a section condition against the player's current section context.
+     *
+     * @param condition configuration-driven constraints for a special
+     * @param context   player's current section information
+     * @return result indicating whether the special should apply in this section
+     */
     public static SectionMatchResult evaluate(SpecialDefinition.SectionCondition condition, SectionMatchContext context) {
         if (condition == null) {
             return SectionMatchResult.allowed("No section condition provided");

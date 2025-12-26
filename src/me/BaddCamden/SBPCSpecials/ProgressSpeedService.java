@@ -22,15 +22,24 @@ public class ProgressSpeedService {
     private final Map<UUID, Double> lastAppliedMultiplier = new HashMap<>();
     private final Map<UUID, Integer> lastAppliedSkipSeconds = new HashMap<>();
 
+    /**
+     * @param timeModifier callback that ultimately pushes timing adjustments into SBPC
+     */
     public ProgressSpeedService(TimeModifier timeModifier) {
         this.timeModifier = timeModifier;
     }
 
+    /**
+     * Compute the multiplicative speed boost derived from applied specials.
+     */
     public double computeSpeedMultiplier(PlayerSpecialData data) {
         double percent = data.getTotalSpeedPercent();
         return 1.0 + (percent / 100.0);
     }
 
+    /**
+     * Reduce an SBPC timer by both skip seconds and accumulated speed bonuses.
+     */
     public long applySpeedToDurationSeconds(long baseDurationSeconds, PlayerSpecialData data) {
         double multiplier = computeSpeedMultiplier(data);
         int skipSeconds = data.getTotalSkipSeconds();
@@ -64,6 +73,9 @@ public class ProgressSpeedService {
         lastAppliedSkipSeconds.put(playerId, skipSeconds);
     }
 
+    /**
+     * Apply a one-off skip for the current session without altering stored bonuses.
+     */
     public void applySessionSkip(UUID playerId, int skipSeconds, String reason) {
         if (skipSeconds <= 0) {
             return;

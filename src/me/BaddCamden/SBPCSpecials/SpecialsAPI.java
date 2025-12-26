@@ -16,10 +16,16 @@ public final class SpecialsAPI {
     private SpecialsAPI() {
     }
 
+    /**
+     * Internal bootstrap from the plugin entry point.
+     */
     static void init(SBPCSpecialsPlugin pl) {
         plugin = pl;
     }
 
+    /**
+     * @return current plugin instance for callers that need context.
+     */
     public static SBPCSpecialsPlugin getPlugin() {
         return plugin;
     }
@@ -31,6 +37,9 @@ public final class SpecialsAPI {
         handlersById.computeIfAbsent(specialId, k -> new ArrayList<>()).add(handler);
     }
 
+    /**
+     * Invoke all registered handlers for the triggered special.
+     */
     static void fireHandlers(SpecialTriggeredEvent event) {
         SpecialDefinition def = event.getSpecialDefinition();
         if (def == null) return;

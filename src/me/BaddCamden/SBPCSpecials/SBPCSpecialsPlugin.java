@@ -80,6 +80,9 @@ public class SBPCSpecialsPlugin extends JavaPlugin implements Listener, CommandE
     private File playersFolder;
     private File specialsDataFile;
 
+    /**
+     * Bootstraps configuration, listeners, and commands for the plugin.
+     */
     @Override
     public void onEnable() {
         saveDefaultConfig();
@@ -111,6 +114,9 @@ public class SBPCSpecialsPlugin extends JavaPlugin implements Listener, CommandE
         getLogger().info("SBPCSpecials enabled. Specials are now config-driven.");
     }
 
+    /**
+     * Persist player/global state before shutdown.
+     */
     @Override
     public void onDisable() {
         savePlayerData();
@@ -122,6 +128,9 @@ public class SBPCSpecialsPlugin extends JavaPlugin implements Listener, CommandE
     // Config loading
     // ------------------------------------------------------------------------
 
+    /**
+     * Parse plugin configuration into in-memory special definitions and trigger indexes.
+     */
     private void loadSpecialsFromConfig() {
         specialsById.clear();
         deathSpecials.clear();
@@ -310,6 +319,9 @@ public class SBPCSpecialsPlugin extends JavaPlugin implements Listener, CommandE
     // Per-player persistence
     // ------------------------------------------------------------------------
 
+    /**
+     * Restore per-player special progress from disk into memory.
+     */
     private void loadPlayerData() {
         playerData.clear();
 
@@ -368,6 +380,9 @@ public class SBPCSpecialsPlugin extends JavaPlugin implements Listener, CommandE
         }
     }
 
+    /**
+     * Reapply persisted bonuses and pending specials as players join.
+     */
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
@@ -390,6 +405,9 @@ public class SBPCSpecialsPlugin extends JavaPlugin implements Listener, CommandE
         applyPendingPotionRequirementSpecials(player, null);
     }
 
+    /**
+     * Persist per-player bonuses, completions, and unique kill tracking.
+     */
     private void savePlayerData() {
         if (!playersFolder.exists() && !playersFolder.mkdirs()) {
             getLogger().warning("Could not create Players folder at " + playersFolder.getPath());
@@ -430,6 +448,9 @@ public class SBPCSpecialsPlugin extends JavaPlugin implements Listener, CommandE
         }
     }
 
+    /**
+     * Load once-per-server completions from disk.
+     */
     private void loadGlobalSpecialsData() {
         completedSpecialsServerWide.clear();
 
@@ -442,6 +463,9 @@ public class SBPCSpecialsPlugin extends JavaPlugin implements Listener, CommandE
         completedSpecialsServerWide.addAll(list);
     }
 
+    /**
+     * Save once-per-server completions to disk.
+     */
     private void saveGlobalSpecialsData() {
         YamlConfiguration cfg = new YamlConfiguration();
         cfg.set("completed-specials-server", new ArrayList<>(completedSpecialsServerWide));
@@ -452,6 +476,9 @@ public class SBPCSpecialsPlugin extends JavaPlugin implements Listener, CommandE
         }
     }
 
+    /**
+     * @return cached or newly created PlayerSpecialData for the uuid.
+     */
     private PlayerSpecialData getOrCreatePlayerData(UUID uuid) {
         return playerData.computeIfAbsent(uuid, k -> new PlayerSpecialData());
     }
@@ -464,6 +491,9 @@ public class SBPCSpecialsPlugin extends JavaPlugin implements Listener, CommandE
     /**
      * Apply any specials that were completed earlier but not yet applied,
      * if their section condition now matches the player's current section.
+     */
+    /**
+     * Apply any completed specials that were waiting for the player's current section.
      */
     private void applyPendingSpecialsForCurrentSection(Player player) {
         if (player == null) {
@@ -501,6 +531,9 @@ public class SBPCSpecialsPlugin extends JavaPlugin implements Listener, CommandE
         }
     }
 
+    /**
+     * Look up a special definition by id, ignoring case when necessary.
+     */
     private SpecialDefinition getSpecialDefinition(String specialId) {
         SpecialDefinition def = specialsById.get(specialId);
         if (def != null) {
@@ -516,6 +549,9 @@ public class SBPCSpecialsPlugin extends JavaPlugin implements Listener, CommandE
         return null;
     }
 
+    /**
+     * Handles /specials administrative commands for testing and cleanup.
+     */
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!"specials".equalsIgnoreCase(command.getName())) {
@@ -549,6 +585,9 @@ public class SBPCSpecialsPlugin extends JavaPlugin implements Listener, CommandE
         return true;
     }
 
+    /**
+     * Suggest completions for /specials subcommands and ids.
+     */
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         if (!"specials".equalsIgnoreCase(command.getName())) {
@@ -587,6 +626,9 @@ public class SBPCSpecialsPlugin extends JavaPlugin implements Listener, CommandE
         return Collections.emptyList();
     }
 
+    /**
+     * Manually activate a special via command, honoring permissions and scope.
+     */
     private void handleActivateCommand(Player player, SpecialDefinition def) {
         if (!player.hasPermission(PERMISSION_ACTIVATE)) {
             player.sendMessage(ChatColor.RED + "You do not have permission to activate specials.");
@@ -634,6 +676,9 @@ public class SBPCSpecialsPlugin extends JavaPlugin implements Listener, CommandE
         player.sendMessage(ChatColor.GREEN + "Special " + id + " activated.");
     }
 
+    /**
+     * Remove an applied special and re-sync speed bonuses for a player.
+     */
     private void handleRemoveCommand(Player player, SpecialDefinition def) {
         if (!player.hasPermission(PERMISSION_REMOVE)) {
             player.sendMessage(ChatColor.RED + "You do not have permission to remove specials.");
@@ -664,9 +709,15 @@ public class SBPCSpecialsPlugin extends JavaPlugin implements Listener, CommandE
         player.sendMessage(ChatColor.YELLOW + "Special " + id + " removed.");
     }
 
+    /**
+     * Inform the player of the proper /specials syntax.
+     */
     private void sendCommandUsage(Player player, String label) {
         player.sendMessage(ChatColor.YELLOW + "Usage: /" + label + " <activate|remove> <special-id>");
     }
+    /**
+     * Apply pending specials gated by potion requirements when the player's effects change.
+     */
     private void applyPendingPotionRequirementSpecials(Player player, PotionEffectType changedEffect) {
         if (player == null) {
             return;
@@ -783,6 +834,9 @@ public class SBPCSpecialsPlugin extends JavaPlugin implements Listener, CommandE
     // Section condition helper
     // ------------------------------------------------------------------------
 
+    /**
+     * Check whether the player's current section satisfies the special's section condition.
+     */
     private boolean sectionConditionMatches(SpecialDefinition def, Player player) {
         SpecialDefinition.SectionCondition cond = def.getSectionCondition();
         if (cond == null) return true;
@@ -807,6 +861,9 @@ public class SBPCSpecialsPlugin extends JavaPlugin implements Listener, CommandE
         return result.isAllowed();
     }
 
+    /**
+     * Log diagnostic information when a special cannot apply due to section mismatch.
+     */
     private void logSectionMismatch(SpecialDefinition def, Player player, SectionMatchResult result) {
         if (result == null || result.isAllowed()) {
             return;
@@ -815,6 +872,9 @@ public class SBPCSpecialsPlugin extends JavaPlugin implements Listener, CommandE
         getLogger().info("Special " + def.getId() + " not applied for " + playerName + ": " + result.getReason());
     }
 
+    /**
+     * Validate potion requirements before applying a special.
+     */
     private boolean requirementsMet(SpecialDefinition def, Player player) {
         SpecialDefinition.PotionRequirement potionReq = def.getPotionRequirement();
         if (potionReq == null) {
@@ -830,6 +890,9 @@ public class SBPCSpecialsPlugin extends JavaPlugin implements Listener, CommandE
         return effect != null && effect.getAmplifier() >= potionReq.getMinAmplifier();
     }
 
+    /**
+     * Record a special as completed for player/server scope without applying rewards.
+     */
     private void markSpecialCompletion(SpecialDefinition def,
                                        PlayerSpecialData data,
                                        SpecialDefinition.ScopeDefinition scope) {
@@ -845,6 +908,9 @@ public class SBPCSpecialsPlugin extends JavaPlugin implements Listener, CommandE
     // Special triggering pipeline
     // ------------------------------------------------------------------------
 
+    /**
+     * Central entry for applying a special after a trigger fires.
+     */
     private void triggerSpecial(SpecialDefinition def, Player player, Entity contextEntity) {
         String id = def.getId();
         UUID uuid = player.getUniqueId();
@@ -892,6 +958,9 @@ public class SBPCSpecialsPlugin extends JavaPlugin implements Listener, CommandE
         applySpecialReward(def, player, contextEntity);
     }
 
+    /**
+     * Handle bespoke PVP-driven section logic for murder/massacre progression.
+     */
     private void handlePvpSectionSpecials(Player killer, Player victim) {
         if (killer == null || victim == null) {
             return;
@@ -941,10 +1010,16 @@ public class SBPCSpecialsPlugin extends JavaPlugin implements Listener, CommandE
         }
     }
 
+    /**
+     * Utility to translate color codes on configurable messages.
+     */
     private String color(String msg) {
         return ChatColor.translateAlternateColorCodes('&', msg);
     }
 
+    /**
+     * Inform the player about section restrictions after a special fires.
+     */
     private void sendSectionApplicabilityMessage(Player player, SpecialDefinition.SectionCondition condition) {
         if (condition == null) {
             return;
@@ -964,6 +1039,9 @@ public class SBPCSpecialsPlugin extends JavaPlugin implements Listener, CommandE
     // Event listeners (generic)
     // ------------------------------------------------------------------------
 
+    /**
+     * Listen for potion effect changes so potion-gated specials can activate.
+     */
     @EventHandler(ignoreCancelled = true)
     public void onEntityPotionEffect(EntityPotionEffectEvent event) {
         if (!(event.getEntity() instanceof Player player)) {
@@ -978,6 +1056,9 @@ public class SBPCSpecialsPlugin extends JavaPlugin implements Listener, CommandE
         applyPendingPotionRequirementSpecials(player, changedType);
     }
 
+    /**
+     * Route mob/player deaths into the relevant specials based on config.
+     */
     @EventHandler(ignoreCancelled = true)
     public void onEntityDeath(EntityDeathEvent event) {
         Player killer = event.getEntity().getKiller();
@@ -1021,6 +1102,9 @@ public class SBPCSpecialsPlugin extends JavaPlugin implements Listener, CommandE
         }
     }
 
+    /**
+     * Trigger pickup-based specials when a player collects matching items.
+     */
     @EventHandler(ignoreCancelled = true)
     public void onEntityPickup(EntityPickupItemEvent event) {
         if (!(event.getEntity() instanceof Player)) {
@@ -1044,6 +1128,9 @@ public class SBPCSpecialsPlugin extends JavaPlugin implements Listener, CommandE
         }
     }
 
+    /**
+     * Trigger unlock-entry specials when SBPC entries are completed.
+     */
     @EventHandler(ignoreCancelled = true)
     public void onUnlockItem(UnlockItemEvent event) {
         String entryId = event.getEntry().getId();

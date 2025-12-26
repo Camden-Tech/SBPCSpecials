@@ -43,6 +43,9 @@ public class SectionProgressListener implements Listener {
     private final Map<UUID, Location> lastHousingLocation = new HashMap<>();
     private final Map<UUID, Long> lastFarmingTick = new HashMap<>();
 
+    /**
+     * Ticks housing progression when the player places a block.
+     */
     @EventHandler(ignoreCancelled = true)
     public void onBlockPlace(BlockPlaceEvent event) {
         Player player = event.getPlayer();
@@ -51,6 +54,9 @@ public class SectionProgressListener implements Listener {
         handleHousingProgress(player, block.getLocation());
     }
 
+    /**
+     * Ticks housing and farming progression when a block is broken.
+     */
     @EventHandler(ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
@@ -60,6 +66,9 @@ public class SectionProgressListener implements Listener {
         handleFarmingProgress(player, block);
     }
 
+    /**
+     * Handles farming/housing interactions such as tilling or stripping logs.
+     */
     @EventHandler(ignoreCancelled = true)
     public void onPlayerInteract(PlayerInteractEvent event) {
         if (!event.hasBlock() || event.getClickedBlock() == null || event.getItem() == null) {
@@ -83,6 +92,10 @@ public class SectionProgressListener implements Listener {
         }
     }
 
+    /**
+     * Apply a housing progress tick if the player is in the housing section and
+     * is not spamming the same block location.
+     */
     private void handleHousingProgress(Player player, Location location) {
         if (!isInSection(player, HOUSING_SECTION_ID)) {
             return;
@@ -105,6 +118,9 @@ public class SectionProgressListener implements Listener {
         applySkip(player, "Housing infrastructure activity");
     }
 
+    /**
+     * Apply a farming progress tick when breaking qualifying plants.
+     */
     private void handleFarmingProgress(Player player, Block block) {
         if (!isInSection(player, FARMING_SECTION_ID)) {
             return;
@@ -125,20 +141,32 @@ public class SectionProgressListener implements Listener {
         applySkip(player, "Farming harvest activity");
     }
 
+    /**
+     * Simple one-second cooldown for progression ticks per player.
+     */
     private boolean isOnCooldown(Map<UUID, Long> map, UUID uuid, long nowMillis) {
         Long last = map.get(uuid);
         return last != null && (nowMillis - last) < 1000L;
     }
 
+    /**
+     * Forward time-skip events into SBPC with configured values.
+     */
     private void applySkip(Player player, String reason) {
         SbpcAPI.applyExternalTimeSkip(player.getUniqueId(), SKIP_SECONDS, SPEED_MULTIPLIER, reason);
     }
 
+    /**
+     * @return true if the player is currently progressing through the section id.
+     */
     private boolean isInSection(Player player, String sectionId) {
         SectionDefinition section = SbpcAPI.getCurrentSectionDefinition(player.getUniqueId(), true);
         return section != null && section.getId().equalsIgnoreCase(sectionId);
     }
 
+    /**
+     * Determine if a block qualifies as a plant for farming progress.
+     */
     private boolean isQualifyingPlant(Block block) {
         // Fully grown crops always count. Otherwise, allow non player-placed plants.
         if (block.getBlockData() instanceof Ageable ageable) {
@@ -150,6 +178,9 @@ public class SectionProgressListener implements Listener {
         return !isPlayerPlaced(block) && isPlantLike(block.getType());
     }
 
+    /**
+     * @return true when the material is considered crop/plant-like for farming.
+     */
     private boolean isPlantLike(Material type) {
         return Tag.CROPS.isTagged(type)
                 || Tag.FLOWERS.isTagged(type)
@@ -166,20 +197,32 @@ public class SectionProgressListener implements Listener {
                 || type.name().contains("MUSHROOM");
     }
 
+    /**
+     * @return true if the block was placed by a player.
+     */
     private boolean isPlayerPlaced(Block block) {
         return block.hasMetadata("player_placed") || block.hasMetadata("placed_by_player");
     }
 
+    /**
+     * @return true when the item is any hoe variant.
+     */
     private boolean isHoe(ItemStack item) {
         Material type = item.getType();
         return type != null && type.name().endsWith("_HOE");
     }
 
+    /**
+     * @return true when the item is any axe variant.
+     */
     private boolean isAxe(ItemStack item) {
         Material type = item.getType();
         return type != null && type.name().endsWith("_AXE");
     }
 
+    /**
+     * @return true if the material type can be tilled by a hoe.
+     */
     private boolean isTillable(Material type) {
         return type == Material.DIRT
                 || type == Material.GRASS_BLOCK

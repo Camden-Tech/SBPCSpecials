@@ -16,6 +16,13 @@ public class SpecialTriggeredEvent extends Event {
     private final Player player;
     private final Entity contextEntity;
 
+    /**
+     * Create an event representing a newly triggered special.
+     *
+     * @param specialDefinition definition of the special that fired
+     * @param player            player who earned the special
+     * @param contextEntity     optional entity involved in the trigger (may be null)
+     */
     public SpecialTriggeredEvent(SpecialDefinition specialDefinition,
                                  Player player,
                                  Entity contextEntity) {
@@ -24,10 +31,16 @@ public class SpecialTriggeredEvent extends Event {
         this.contextEntity = contextEntity;
     }
 
+    /**
+     * @return the immutable configuration for the triggered special.
+     */
     public SpecialDefinition getSpecialDefinition() {
         return specialDefinition;
     }
 
+    /**
+     * @return the player who activated the special.
+     */
     public Player getPlayer() {
         return player;
     }
@@ -40,11 +53,17 @@ public class SpecialTriggeredEvent extends Event {
         return contextEntity;
     }
 
+    /**
+     * HandlerList required by the Bukkit event contract.
+     */
     @Override
     public HandlerList getHandlers() {
         return HANDLERS;
     }
 
+    /**
+     * Static helper demanded by Bukkit for custom events.
+     */
     public static HandlerList getHandlerList() {
         return HANDLERS;
     }
